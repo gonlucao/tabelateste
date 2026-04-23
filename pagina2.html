@@ -143,8 +143,8 @@ tr:nth-child(even){ background:#fafafa; }
 
 <script>
 
-/* 🔥 VALIDA LOGIN */
-window.onload = () => {
+/* 🔥 VALIDA LOGIN E MOSTRA USUÁRIO */
+window.addEventListener("load", () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
 
   if(!logado){
@@ -154,15 +154,15 @@ window.onload = () => {
 
   document.getElementById("usuarioLogado").innerText =
     `👤 ${logado.nome} (${logado.perfil})`;
+});
 
-  carregarRanking();
-  calcularDiasRestantes();
-};
-
+/* 🔥 LOGOUT */
 function logout(){
   localStorage.removeItem("logado");
   window.location.href = "index.html";
 }
+
+/* ===== SEU CÓDIGO ORIGINAL (INTACTO) ===== */
 
 const abas = ["1836732217","576248296","1758926410"];
 
@@ -193,7 +193,126 @@ function calcularDiasRestantes(){
   el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
 }
 
-/* RESTO DO SEU CÓDIGO PERMANECE IGUAL */
+async function carregarMes(gid){
+  const url=`https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res=await fetch(url);
+  const text=await res.text();
+  const json=JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+  return json.table.rows;
+}
+
+async function carregarRanking(){
+
+  document.getElementById("tituloMes").innerText =
+    "Ranking do mês de " + getNomeMes();
+
+  const mesAtual = getMesAtual();
+  const mesAnterior = Math.max(0, mesAtual-1);
+
+  const atual = await carregarMes(abas[mesAtual]);
+  const anterior = await carregarMes(abas[mesAnterior]);
+
+  let mapaAnterior = {};
+
+  anterior.forEach((r,i)=>{
+    if(i===0) return;
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+    if(nome) mapaAnterior[nome]=total;
+  });
+
+  listaOriginal = [];
+
+  atual.forEach((r,i)=>{
+    if(i===0) return;
+
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+
+    if(!nome) return;
+
+    let anteriorVal = mapaAnterior[nome] || 0;
+
+    listaOriginal.push({
+      nome,
+      total,
+      evolucao: total - anteriorVal
+    });
+  });
+
+  aplicarFiltros();
+}
+
+function aplicarFiltros(){
+  const busca = document.getElementById("busca").value.toLowerCase();
+
+  lista = listaOriginal.filter(t=>{
+    return t.nome.toLowerCase().includes(busca);
+  });
+
+  ordenarRender();
+}
+
+document.getElementById("busca").addEventListener("input", aplicarFiltros);
+
+function ordenar(){
+  ordemDesc = !ordemDesc;
+  ordenarRender();
+}
+
+function ordenarRender(){
+  lista.sort((a,b)=> ordemDesc ? b.total-a.total : a.total-b.total);
+  renderTop3();
+  renderTabela();
+}
+
+function renderTop3(){
+  let top3=document.getElementById("top3");
+  top3.innerHTML="";
+
+  const medalhas=["🥇","🥈","🥉"];
+
+  lista.slice(0,3).forEach((t,i)=>{
+    top3.innerHTML+=`
+      <div class="top3-card">
+        <div>${medalhas[i]}</div>
+        <strong>${t.nome}</strong>
+        <div>${t.total}</div>
+      </div>
+    `;
+  });
+}
+
+function renderTabela(){
+  let tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+
+  lista.forEach((t,i)=>{
+
+    let cor="vermelho";
+    if(i<3) cor="verde";
+    else if(t.total>=170) cor="amarelo";
+
+    let evo = t.evolucao > 0 
+      ? `<span class="seta-up">↑ ${t.evolucao}</span>`
+      : t.evolucao < 0 
+      ? `<span class="seta-down">↓ ${Math.abs(t.evolucao)}</span>`
+      : "-";
+
+    tbody.innerHTML+=`
+      <tr>
+        <td>${i+1}</td>
+        <td><span class="status ${cor}"></span>${t.nome}</td>
+        <td>${t.total}</td>
+        <td>${evo}</td>
+      </tr>
+    `;
+  });
+}
+
+/* INICIALIZAÇÃO */
+carregarRanking();
+calcularDiasRestantes();
 
 </script>
 
