@@ -351,18 +351,16 @@ async function login(){
 }
 
 function aplicarLogin(user){
-  loginBox.style.display="none";
-  usuarioLogado.innerText = `👤 ${user.nome} (${user.perfil})`;
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("usuarioLogado").innerText = `👤 ${user.nome} (${user.perfil})`;
 
   if(user.perfil === "supervisor"){
     mostrarPagina(0);
-    carregarDados();
+    carregarDados(); // 🔥 somente aqui
   } else {
-    // 🔥 REDIRECIONA PARA PAGINA 2
+    // 🔥 redireciona para pagina2
     window.location.href = "pagina2.html";
   }
-}
-  carregarDados(); // 🔥 essencial
 }
 
 function logout(){
@@ -372,6 +370,21 @@ function logout(){
 
 function erro(msg){
   document.getElementById("erro").innerText = msg;
+}
+
+/* MENU */
+function trocarPagina(i){
+  mostrarPagina(i);
+}
+
+function mostrarPagina(i){
+  document.querySelectorAll(".pagina").forEach((p,index)=>{
+    p.classList.toggle("ativa", index===i);
+  });
+
+  document.querySelectorAll("#menu button").forEach((b,index)=>{
+    b.classList.toggle("ativo", index===i);
+  });
 }
 
 /* MENU */
