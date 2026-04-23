@@ -354,13 +354,14 @@ function aplicarLogin(user){
   loginBox.style.display="none";
   usuarioLogado.innerText = `👤 ${user.nome} (${user.perfil})`;
 
-  if(user.perfil==="supervisor"){
+  if(user.perfil === "supervisor"){
     mostrarPagina(0);
-  }else{
-    mostrarPagina(1);
-    document.querySelectorAll("#menu button")[0].style.display="none";
+    carregarDados();
+  } else {
+    // 🔥 REDIRECIONA PARA PAGINA 2
+    window.location.href = "pagina2.html";
   }
-
+}
   carregarDados(); // 🔥 essencial
 }
 
