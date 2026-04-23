@@ -41,6 +41,32 @@ body {
   margin-bottom:20px;
 }
 
+/* TOP 3 */
+.top3 {
+  display:flex;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.top3-card {
+  flex:1;
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 4px 10px #0001;
+}
+
+.top3-card .medalha {
+  font-size:26px;
+}
+
+.top3-card strong {
+  display:block;
+  margin-top:8px;
+  font-size:16px;
+}
+
 /* CARD */
 .card {
   background:white;
@@ -94,6 +120,9 @@ th:first-child, td:first-child {
   <h2>Ranking do Mês Atual</h2>
 </div>
 
+<!-- 🔥 TOP 3 -->
+<div class="top3" id="top3"></div>
+
 <div class="card">
 <table>
 <thead>
@@ -111,16 +140,15 @@ th:first-child, td:first-child {
 
 <script>
 
-/* GIDs DOS MESES */
+/* GIDs */
 const abas = [
-  "1836732217", // Jan
-  "576248296",  // Fev
-  "1758926410"  // Mar
+  "1836732217",
+  "576248296",
+  "1758926410"
 ];
 
-/* PEGAR MÊS ATUAL */
 function getMesAtual(){
-  const mes = new Date().getMonth(); // 0-11
+  const mes = new Date().getMonth();
   return Math.min(mes, abas.length - 1);
 }
 
@@ -150,9 +178,32 @@ async function carregarRanking(){
     lista.push({nome, total});
   });
 
-  // ordenar
   lista.sort((a,b)=>b.total-a.total);
 
+  renderTop3(lista);
+  renderTabela(lista);
+}
+
+/* 🔥 TOP 3 */
+function renderTop3(lista){
+  let top3 = document.getElementById("top3");
+  top3.innerHTML = "";
+
+  const medalhas = ["🥇","🥈","🥉"];
+
+  lista.slice(0,3).forEach((t,i)=>{
+    top3.innerHTML += `
+      <div class="top3-card">
+        <div class="medalha">${medalhas[i]}</div>
+        <strong>${t.nome}</strong>
+        <div>${t.total}</div>
+      </div>
+    `;
+  });
+}
+
+/* TABELA */
+function renderTabela(lista){
   let tbody = document.getElementById("tbody");
   tbody.innerHTML="";
 
@@ -177,7 +228,6 @@ async function carregarRanking(){
       </tr>
     `;
   });
-
 }
 
 carregarRanking();
