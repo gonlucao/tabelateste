@@ -27,7 +27,7 @@ body {
 
 .login-box{
   background:white;
-  padding:35px;
+  padding:25px;
   border-radius:12px;
   width:300px;
 
@@ -239,7 +239,7 @@ tr:hover { background:#f9fafb; }
 
 <div class="menu" id="menu">
   <button onclick="trocarPagina(0)">Dashboard</button>
-  <button onclick="trocarPagina(1)">Metas equipes</button>
+    <button onclick="trocarPagina(1)">ranking.html</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -366,6 +366,10 @@ function erro(msg){
 }
 
 /* MENU */
+
+ function abrirRanking(){
+  window.location.href = "ranking.html";
+}
 function trocarPagina(i){
   mostrarPagina(i);
 }
