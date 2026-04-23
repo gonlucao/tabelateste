@@ -319,6 +319,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbydC82xbEs7KD4MZcwxyxXX
 /* LOGIN */
 window.onload = () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
+
   if(logado){
     aplicarLogin(logado);
   } else {
@@ -330,15 +331,20 @@ async function login(){
   let u = user.value;
   let p = pass.value;
 
-  let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
-  let data = await res.json();
+  try {
+    let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
+    let data = await res.json();
 
-  if(data.status){
-    let userData = {nome:data.nome, perfil:data.perfil};
-    localStorage.setItem("logado", JSON.stringify(userData));
-    aplicarLogin(userData);
-  }else{
-    erro("Login inválido");
+    if(data.status){
+      let userData = {nome:data.nome, perfil:data.perfil};
+      localStorage.setItem("logado", JSON.stringify(userData));
+      aplicarLogin(userData);
+    }else{
+      erro("Login inválido");
+    }
+  } catch(e){
+    erro("Erro ao conectar API");
+    console.error(e);
   }
 }
 
@@ -353,7 +359,7 @@ function aplicarLogin(user){
     document.querySelectorAll("#menu button")[0].style.display="none";
   }
 
-  carregarDados();
+  carregarDados(); // 🔥 essencial
 }
 
 function logout(){
@@ -380,7 +386,7 @@ function mostrarPagina(i){
   });
 }
 
-/* DASH (SEU ORIGINAL) */
+/* DASH */
 let dadosTecnicos = {};
 let lista = [];
 let direcao = 1;
@@ -388,34 +394,44 @@ let direcao = 1;
 const abas = ["1836732217","576248296","1758926410"];
 
 async function carregarMes(gid){
-  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
-  const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
-  return json.table.rows;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+    return json.table.rows;
+  } catch(e){
+    console.error("Erro ao carregar mês:", gid, e);
+    return [];
+  }
 }
 
 async function carregarDados(){
-  dadosTecnicos = {};
+  try {
+    dadosTecnicos = {};
 
-  const resultados = await Promise.all(abas.map(gid => carregarMes(gid)));
+    const resultados = await Promise.all(abas.map(gid => carregarMes(gid)));
 
-  resultados.forEach((rows, i) => {
-    rows.forEach((r,index)=>{
-      if(index===0) return;
+    resultados.forEach((rows, i) => {
+      rows.forEach((r,index)=>{
+        if(index===0) return;
 
-      let nome = r.c[0]?.v;
-      if(!nome) return;
+        let nome = r.c[0]?.v;
+        if(!nome) return;
 
-      let total = Number(r.c[19]?.v)||0;
+        let total = Number(r.c[19]?.v)||0;
 
-      if(!dadosTecnicos[nome]) dadosTecnicos[nome]=[0,0,0];
-      dadosTecnicos[nome][i]=total;
+        if(!dadosTecnicos[nome]) dadosTecnicos[nome]=[0,0,0];
+        dadosTecnicos[nome][i]=total;
+      });
     });
-  });
 
-  montarLista();
-  render();
+    montarLista();
+    render();
+
+  } catch(e){
+    console.error("Erro geral ao carregar dados:", e);
+  }
 }
 
 function media(a){ return a.reduce((x,y)=>x+y,0)/a.length; }
