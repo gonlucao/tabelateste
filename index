@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Monitoramento - Metas equipes externa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Inter';
+  background:#f5f7fb;
+  padding:20px;
+}
+
+/* LOGIN */
+.login-overlay{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#00000090;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.login-box{
+  background:white;
+  padding:35px;
+  border-radius:12px;
+  width:300px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.login-box input, .login-box select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.login-box button{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  background:#dc2626;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* USER BAR */
+.user-bar{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.user-bar button{
+  background:#dc2626;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.container { max-width:1200px; margin:auto; }
+
+/* MENU */
+.menu { display:flex; gap:10px; margin-bottom:15px; }
+
+.menu button{
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#e5e7eb;
+  font-weight:600;
+}
+
+.menu button.ativo{
+  background:#dc2626;
+  color:white;
+}
+
+/* PAGINAS */
+.pagina { display:none; }
+.pagina.ativa { display:block; }
+
+.topbar {
+  background: linear-gradient(90deg,#b91c1c,#dc2626);
+  padding:15px;
+  border-radius:12px;
+  color:white;
+}
+
+.topbar-content {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo { height:45px; }
+
+/* KPIs */
+.cards {
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:15px;
+  margin-top:20px;
+}
+
+.card-kpi {
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 4px 10px #0001;
+}
+
+.card-kpi span {
+  font-size:32px;
+  font-weight:bold;
+}
+
+/* META */
+.meta-grid {
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+
+.meta-box {
+  padding:18px;
+  border-radius:14px;
+  color:white;
+  text-align:center;
+}
+
+.meta-box strong {
+  font-size:30px;
+  display:block;
+}
+
+.meta3 { background:#16a34a; }
+.meta2 { background:#f59e0b; }
+.meta1 { background:#dc2626; }
+
+/* TOP 3 */
+.top3 { display:flex; gap:15px; margin-top:20px; }
+
+.top3-card {
+  flex:1;
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 4px 10px #0001;
+}
+
+/* TABLE */
+.card {
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  margin-top:20px;
+}
+
+table { width:100%; border-collapse:collapse; }
+
+th,td {
+  padding:10px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+}
+
+th:first-child,td:first-child { text-align:left; }
+
+tr:hover { background:#f9fafb; }
+
+.meta-ok{color:#16a34a;font-weight:bold;}
+.meta-bad{color:#dc2626;}
+
+.circulo{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  font-size:9px;
+  color:white;
+  margin-right:3px;
+}
+
+.verde{background:#16a34a;}
+.vermelho{background:#dc2626;}
+
+.btn-sort {
+  cursor:pointer;
+  margin-left:6px;
+  font-size:12px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginBox">
+  <div class="login-box">
+    <h3>Login</h3>
+
+    <input type="text" id="user" placeholder="Usuário">
+    <input type="password" id="pass" placeholder="Senha">
+
+    <button onclick="login()">Entrar</button>
+
+    <p id="erro" style="color:red;font-size:12px;"></p>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="user-bar">
+  <span id="usuarioLogado"></span>
+  <button onclick="logout()">Sair</button>
+</div>
+
+<div class="menu" id="menu">
+  <button onclick="trocarPagina(0)">Dashboard</button>
+  <button onclick="trocarPagina(1)">Metas equipes</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="pagina ativa" id="p1">
+
+<div class="topbar">
+  <div class="topbar-content">
+    <img src="https://i.ibb.co/rjpBZ8P/Logo-RBT-Perfil.jpg" class="logo">
+    <span>Monitoramento - Metas equipes externa</span>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card-kpi">
+    <h3>Total Técnicos</h3>
+    <span id="totalTec">0</span>
+  </div>
+
+  <div class="card-kpi">
+    <h3>Média Geral</h3>
+    <span id="mediaGeral">0</span>
+  </div>
+
+  <div class="card-kpi">
+    <h3>Consistência de Metas</h3>
+    <div class="meta-grid">
+      <div class="meta-box meta3">
+        <strong id="meta3">0%</strong>
+        <span>3/3</span>
+      </div>
+      <div class="meta-box meta2">
+        <strong id="meta2">0%</strong>
+        <span>2/3</span>
+      </div>
+      <div class="meta-box meta1">
+        <strong id="meta1">0%</strong>
+        <span>1/3</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="top3" id="top3"></div>
+
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>Técnico</th>
+<th>Jan <span class="btn-sort" onclick="ordenar(0)">⇅</span></th>
+<th>Fev <span class="btn-sort" onclick="ordenar(1)">⇅</span></th>
+<th>Mar <span class="btn-sort" onclick="ordenar(2)">⇅</span></th>
+<th>Média <span class="btn-sort" onclick="ordenar(3)">⇅</span></th>
+<th>Status <span class="btn-sort" onclick="ordenar(4)">⇅</span></th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+</div>
+
+<!-- PAGINA 2 -->
+<div class="pagina" id="p2">
+  <div class="card">
+    <h2>Metas equipes</h2>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+/* API */
+const API_URL = "https://script.google.com/macros/s/AKfycbydC82xbEs7KD4MZcwxyxXX6ahBJKWN9QYKqZ_DV_OZH96EsG1JyyomJNjd3GpwWe2N/exec";
+
+/* LOGIN */
+window.onload = () => {
+  let logado = JSON.parse(localStorage.getItem("logado"));
+  if(logado){
+    aplicarLogin(logado);
+  } else {
+    mostrarPagina(0);
+  }
+};
+
+async function login(){
+  let u = user.value;
+  let p = pass.value;
+
+  let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
+  let data = await res.json();
+
+  if(data.status){
+    let userData = {nome:data.nome, perfil:data.perfil};
+    localStorage.setItem("logado", JSON.stringify(userData));
+    aplicarLogin(userData);
+  }else{
+    erro("Login inválido");
+  }
+}
+
+function aplicarLogin(user){
+  loginBox.style.display="none";
+  usuarioLogado.innerText = `👤 ${user.nome} (${user.perfil})`;
+
+  if(user.perfil==="supervisor"){
+    mostrarPagina(0);
+  }else{
+    mostrarPagina(1);
+    document.querySelectorAll("#menu button")[0].style.display="none";
+  }
+
+  carregarDados();
+}
+
+function logout(){
+  localStorage.removeItem("logado");
+  location.reload();
+}
+
+function erro(msg){
+  document.getElementById("erro").innerText = msg;
+}
+
+/* MENU */
+function trocarPagina(i){
+  mostrarPagina(i);
+}
+
+function mostrarPagina(i){
+  document.querySelectorAll(".pagina").forEach((p,index)=>{
+    p.classList.toggle("ativa", index===i);
+  });
+
+  document.querySelectorAll("#menu button").forEach((b,index)=>{
+    b.classList.toggle("ativo", index===i);
+  });
+}
+
+/* DASH (SEU ORIGINAL) */
+let dadosTecnicos = {};
+let lista = [];
+let direcao = 1;
+
+const abas = ["1836732217","576248296","1758926410"];
+
+async function carregarMes(gid){
+  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+  return json.table.rows;
+}
+
+async function carregarDados(){
+  dadosTecnicos = {};
+
+  const resultados = await Promise.all(abas.map(gid => carregarMes(gid)));
+
+  resultados.forEach((rows, i) => {
+    rows.forEach((r,index)=>{
+      if(index===0) return;
+
+      let nome = r.c[0]?.v;
+      if(!nome) return;
+
+      let total = Number(r.c[19]?.v)||0;
+
+      if(!dadosTecnicos[nome]) dadosTecnicos[nome]=[0,0,0];
+      dadosTecnicos[nome][i]=total;
+    });
+  });
+
+  montarLista();
+  render();
+}
+
+function media(a){ return a.reduce((x,y)=>x+y,0)/a.length; }
+function metas(a){ return a.filter(v=>v>=170).length; }
+
+function montarLista(){
+  lista = Object.keys(dadosTecnicos).map(n=>{
+    let v = dadosTecnicos[n];
+    return {n,v,m:media(v),k:metas(v)};
+  }).filter(x=>x.m>=50);
+}
+
+function render(){
+  if(lista.length === 0) return;
+
+  totalTec.innerText = lista.length;
+
+  mediaGeral.innerText =
+    (lista.reduce((s,x)=>s+x.m,0)/lista.length).toFixed(1);
+
+  meta3.innerText =
+    Math.round((lista.filter(x=>x.k===3).length/lista.length)*100)+"%";
+
+  meta2.innerText =
+    Math.round((lista.filter(x=>x.k===2).length/lista.length)*100)+"%";
+
+  meta1.innerText =
+    Math.round((lista.filter(x=>x.k===1).length/lista.length)*100)+"%";
+
+  renderTabela();
+  renderTop3();
+}
+
+function renderTop3(){
+  let top3=document.getElementById("top3");
+  top3.innerHTML="";
+  const medalhas=["🥇","🥈","🥉"];
+
+  [...lista]
+    .sort((a,b)=>b.m-a.m)
+    .slice(0,3)
+    .forEach((t,i)=>{
+      top3.innerHTML+=`
+        <div class="top3-card">
+          <div style="font-size:24px">${medalhas[i]}</div>
+          <strong>${t.n}</strong>
+          <div>${t.m.toFixed(1)}</div>
+        </div>
+      `;
+    });
+}
+
+function renderTabela(){
+  let tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+
+  lista.forEach(o=>{
+    let linha=`<tr><td>${o.n}</td>`;
+
+    o.v.forEach(x=>{
+      linha+=`<td class="${x>=170?'meta-ok':'meta-bad'}">${x}</td>`;
+    });
+
+    linha+=`<td>${o.m.toFixed(1)}</td>`;
+
+    let s="";
+    ["JAN","FEV","MAR"].forEach((m,i)=>{
+      s+=`<span class="circulo ${o.v[i]>=170?'verde':'vermelho'}">${m}</span>`;
+    });
+
+    linha+=`<td>${s}</td></tr>`;
+    tbody.innerHTML+=linha;
+  });
+}
+
+function ordenar(col){
+  direcao = direcao * -1;
+
+  lista.sort((a,b)=>{
+    if(col <= 2) return direcao * (a.v[col] - b.v[col]);
+    if(col === 3) return direcao * (a.m - b.m);
+    if(col === 4) return direcao * (a.k - b.k);
+  });
+
+  renderTabela();
+}
+
+</script>
+
+</body>
+</html>
+
