@@ -26,28 +26,28 @@ body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
   padding:15px;
   border-radius:12px;
   color:white;
-  margin-bottom:20px;
+  margin-bottom:10px;
 }
 
-/* FILTROS */
+/* CONTADOR */
+#contadorDias{
+  margin-bottom:15px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  display:inline-block;
+  font-weight:600;
+}
+
+/* FILTRO */
 .filtros {
-  display:flex;
-  gap:10px;
   margin-bottom:15px;
 }
 .filtros input{
   padding:10px;
   border-radius:8px;
   border:1px solid #ccc;
-  flex:1;
-}
-.filtros button{
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  background:#dc2626;
-  color:white;
+  width:100%;
 }
 
 /* TOP 3 */
@@ -81,8 +81,9 @@ tr:nth-child(even){ background:#fafafa; }
 .amarelo{background:#f59e0b;}
 .vermelho{background:#dc2626;}
 
-.up{color:#16a34a;}
-.down{color:#dc2626;}
+.seta-up { color:#16a34a; font-weight:bold; }
+.seta-down { color:#dc2626; font-weight:bold; }
+
 </style>
 </head>
 
@@ -99,10 +100,11 @@ tr:nth-child(even){ background:#fafafa; }
   <h2 id="tituloMes"></h2>
 </div>
 
-<!-- FILTROS -->
+<!-- CONTADOR -->
+<div id="contadorDias"></div>
+
 <div class="filtros">
   <input type="text" id="busca" placeholder="Buscar técnico...">
-  <button onclick="toggleMeta()">Só ≥170</button>
 </div>
 
 <div class="top3" id="top3"></div>
@@ -129,7 +131,6 @@ const abas = ["1836732217","576248296","1758926410"];
 
 let lista = [];
 let listaOriginal = [];
-let filtroMeta = false;
 let ordemDesc = true;
 
 function getNomeMes(){
@@ -139,6 +140,33 @@ function getNomeMes(){
 
 function getMesAtual(){
   return Math.min(new Date().getMonth(), abas.length-1);
+}
+
+/* 🔥 CONTADOR DE DIAS */
+function calcularDiasRestantes(){
+  const hoje = new Date();
+
+  const ultimoDia = new Date(
+    hoje.getFullYear(),
+    hoje.getMonth() + 1,
+    0
+  );
+
+  const diff = Math.ceil(
+    (ultimoDia - hoje) / (1000 * 60 * 60 * 24)
+  );
+
+  const el = document.getElementById("contadorDias");
+
+  if(diff <= 3){
+    el.style.color = "#dc2626";
+  } else if(diff <= 7){
+    el.style.color = "#f59e0b";
+  } else {
+    el.style.color = "#16a34a";
+  }
+
+  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
 }
 
 async function carregarMes(gid){
@@ -191,12 +219,11 @@ async function carregarRanking(){
   aplicarFiltros();
 }
 
-/* FILTROS */
+/* FILTRO */
 function aplicarFiltros(){
   const busca = document.getElementById("busca").value.toLowerCase();
 
   lista = listaOriginal.filter(t=>{
-    if(filtroMeta && t.total < 170) return false;
     return t.nome.toLowerCase().includes(busca);
   });
 
@@ -204,11 +231,6 @@ function aplicarFiltros(){
 }
 
 document.getElementById("busca").addEventListener("input", aplicarFiltros);
-
-function toggleMeta(){
-  filtroMeta = !filtroMeta;
-  aplicarFiltros();
-}
 
 /* ORDENAÇÃO */
 function ordenar(){
@@ -251,21 +273,26 @@ function renderTabela(){
     if(i<3) cor="verde";
     else if(t.total>=170) cor="amarelo";
 
-    let evo = t.evolucao > 0 ? `🔼 ${t.evolucao}` :
-              t.evolucao < 0 ? `🔽 ${Math.abs(t.evolucao)}` : "-";
+    let evo = t.evolucao > 0 
+      ? `<span class="seta-up">↑ ${t.evolucao}</span>`
+      : t.evolucao < 0 
+      ? `<span class="seta-down">↓ ${Math.abs(t.evolucao)}</span>`
+      : "-";
 
     tbody.innerHTML+=`
       <tr>
         <td>${i+1}</td>
         <td><span class="status ${cor}"></span>${t.nome}</td>
         <td>${t.total}</td>
-        <td class="${t.evolucao>=0?'up':'down'}">${evo}</td>
+        <td>${evo}</td>
       </tr>
     `;
   });
 }
 
+/* INICIALIZAÇÃO */
 carregarRanking();
+calcularDiasRestantes();
 
 </script>
 
