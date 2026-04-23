@@ -7,17 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-  font-family: 'Inter';
-  background:#f5f7fb;
-  padding:20px;
-}
-
+body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
 .container { max-width:1200px; margin:auto; }
 
-/* MENU */
 .menu { display:flex; gap:10px; margin-bottom:15px; }
-
 .menu button{
   padding:10px 18px;
   border:none;
@@ -26,13 +19,8 @@ body {
   background:#e5e7eb;
   font-weight:600;
 }
+.menu button.ativo{ background:#dc2626; color:white; }
 
-.menu button.ativo{
-  background:#dc2626;
-  color:white;
-}
-
-/* TOPO */
 .topbar {
   background: linear-gradient(90deg,#b91c1c,#dc2626);
   padding:15px;
@@ -41,13 +29,29 @@ body {
   margin-bottom:20px;
 }
 
-/* TOP 3 */
-.top3 {
+/* FILTROS */
+.filtros {
   display:flex;
-  gap:15px;
-  margin-bottom:20px;
+  gap:10px;
+  margin-bottom:15px;
+}
+.filtros input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  flex:1;
+}
+.filtros button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#dc2626;
+  color:white;
 }
 
+/* TOP 3 */
+.top3 { display:flex; gap:15px; margin-bottom:20px; }
 .top3-card {
   flex:1;
   background:white;
@@ -57,40 +61,15 @@ body {
   box-shadow:0 4px 10px #0001;
 }
 
-.top3-card .medalha {
-  font-size:26px;
-}
+.card { background:white; padding:20px; border-radius:16px; }
 
-.top3-card strong {
-  display:block;
-  margin-top:8px;
-  font-size:16px;
-}
+table { width:100%; border-collapse:collapse; }
+th,td { padding:12px; border-bottom:1px solid #eee; text-align:center; }
+th { cursor:pointer; }
+th:first-child, td:first-child { text-align:left; }
 
-/* CARD */
-.card {
-  background:white;
-  padding:20px;
-  border-radius:16px;
-}
+tr:nth-child(even){ background:#fafafa; }
 
-/* TABELA */
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td {
-  padding:12px;
-  border-bottom:1px solid #eee;
-  text-align:center;
-}
-
-th:first-child, td:first-child {
-  text-align:left;
-}
-
-/* BOLINHAS */
 .status {
   display:inline-block;
   width:10px;
@@ -98,11 +77,12 @@ th:first-child, td:first-child {
   border-radius:50%;
   margin-right:8px;
 }
+.verde{background:#16a34a;}
+.amarelo{background:#f59e0b;}
+.vermelho{background:#dc2626;}
 
-.verde { background:#16a34a; }
-.amarelo { background:#f59e0b; }
-.vermelho { background:#dc2626; }
-
+.up{color:#16a34a;}
+.down{color:#dc2626;}
 </style>
 </head>
 
@@ -110,27 +90,31 @@ th:first-child, td:first-child {
 
 <div class="container">
 
-<!-- MENU -->
 <div class="menu">
   <button onclick="window.location.href='index.html'">📊 Dashboard</button>
-  <button class="ativo">🏆 Ranking Mensal</button>
+  <button class="ativo">🏆 Ranking</button>
 </div>
 
-<!-- 🔥 TÍTULO DINÂMICO -->
 <div class="topbar">
   <h2 id="tituloMes"></h2>
 </div>
 
-<!-- TOP 3 -->
+<!-- FILTROS -->
+<div class="filtros">
+  <input type="text" id="busca" placeholder="Buscar técnico...">
+  <button onclick="toggleMeta()">Só ≥170</button>
+</div>
+
 <div class="top3" id="top3"></div>
 
 <div class="card">
 <table>
 <thead>
 <tr>
-<th>#</th>
+<th onclick="ordenar()">#</th>
 <th>Técnico</th>
-<th>Pontuação</th>
+<th onclick="ordenar()">Pontuação ⇅</th>
+<th>Evolução</th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
@@ -141,75 +125,114 @@ th:first-child, td:first-child {
 
 <script>
 
-/* GIDs */
-const abas = [
-  "1836732217",
-  "576248296",
-  "1758926410"
-];
+const abas = ["1836732217","576248296","1758926410"];
 
-/* NOME DO MÊS */
+let lista = [];
+let listaOriginal = [];
+let filtroMeta = false;
+let ordemDesc = true;
+
 function getNomeMes(){
-  const meses = [
-    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
-  ];
+  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   return meses[new Date().getMonth()];
 }
 
-/* PEGAR MÊS ATUAL */
 function getMesAtual(){
-  const mes = new Date().getMonth();
-  return Math.min(mes, abas.length - 1);
+  return Math.min(new Date().getMonth(), abas.length-1);
 }
 
 async function carregarMes(gid){
-  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
-  const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+  const url=`https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res=await fetch(url);
+  const text=await res.text();
+  const json=JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
   return json.table.rows;
 }
 
 async function carregarRanking(){
 
-  // 🔥 ATUALIZA TÍTULO
   document.getElementById("tituloMes").innerText =
     "Ranking do mês de " + getNomeMes();
 
-  const mesIndex = getMesAtual();
-  const rows = await carregarMes(abas[mesIndex]);
+  const mesAtual = getMesAtual();
+  const mesAnterior = Math.max(0, mesAtual-1);
 
-  let lista = [];
+  const atual = await carregarMes(abas[mesAtual]);
+  const anterior = await carregarMes(abas[mesAnterior]);
 
-  rows.forEach((r,index)=>{
-    if(index===0) return;
+  let mapaAnterior = {};
 
-    let nome = r.c[0]?.v;
-    if(!nome) return;
-
-    let total = Number(r.c[19]?.v)||0;
-
-    lista.push({nome, total});
+  anterior.forEach((r,i)=>{
+    if(i===0) return;
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+    if(nome) mapaAnterior[nome]=total;
   });
 
-  lista.sort((a,b)=>b.total-a.total);
+  listaOriginal = [];
 
-  renderTop3(lista);
-  renderTabela(lista);
+  atual.forEach((r,i)=>{
+    if(i===0) return;
+
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+
+    if(!nome) return;
+
+    let anteriorVal = mapaAnterior[nome] || 0;
+
+    listaOriginal.push({
+      nome,
+      total,
+      evolucao: total - anteriorVal
+    });
+  });
+
+  aplicarFiltros();
+}
+
+/* FILTROS */
+function aplicarFiltros(){
+  const busca = document.getElementById("busca").value.toLowerCase();
+
+  lista = listaOriginal.filter(t=>{
+    if(filtroMeta && t.total < 170) return false;
+    return t.nome.toLowerCase().includes(busca);
+  });
+
+  ordenarRender();
+}
+
+document.getElementById("busca").addEventListener("input", aplicarFiltros);
+
+function toggleMeta(){
+  filtroMeta = !filtroMeta;
+  aplicarFiltros();
+}
+
+/* ORDENAÇÃO */
+function ordenar(){
+  ordemDesc = !ordemDesc;
+  ordenarRender();
+}
+
+function ordenarRender(){
+  lista.sort((a,b)=> ordemDesc ? b.total-a.total : a.total-b.total);
+  renderTop3();
+  renderTabela();
 }
 
 /* TOP 3 */
-function renderTop3(lista){
-  let top3 = document.getElementById("top3");
-  top3.innerHTML = "";
+function renderTop3(){
+  let top3=document.getElementById("top3");
+  top3.innerHTML="";
 
-  const medalhas = ["🥇","🥈","🥉"];
+  const medalhas=["🥇","🥈","🥉"];
 
   lista.slice(0,3).forEach((t,i)=>{
-    top3.innerHTML += `
+    top3.innerHTML+=`
       <div class="top3-card">
-        <div class="medalha">${medalhas[i]}</div>
+        <div>${medalhas[i]}</div>
         <strong>${t.nome}</strong>
         <div>${t.total}</div>
       </div>
@@ -218,28 +241,25 @@ function renderTop3(lista){
 }
 
 /* TABELA */
-function renderTabela(lista){
-  let tbody = document.getElementById("tbody");
+function renderTabela(){
+  let tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   lista.forEach((t,i)=>{
 
-    let classe = "vermelho";
+    let cor="vermelho";
+    if(i<3) cor="verde";
+    else if(t.total>=170) cor="amarelo";
 
-    if(i < 3){
-      classe = "verde";
-    } else if(t.total >= 170){
-      classe = "amarelo";
-    }
+    let evo = t.evolucao > 0 ? `🔼 ${t.evolucao}` :
+              t.evolucao < 0 ? `🔽 ${Math.abs(t.evolucao)}` : "-";
 
-    tbody.innerHTML += `
+    tbody.innerHTML+=`
       <tr>
         <td>${i+1}</td>
-        <td>
-          <span class="status ${classe}"></span>
-          ${t.nome}
-        </td>
+        <td><span class="status ${cor}"></span>${t.nome}</td>
         <td>${t.total}</td>
+        <td class="${t.evolucao>=0?'up':'down'}">${evo}</td>
       </tr>
     `;
   });
