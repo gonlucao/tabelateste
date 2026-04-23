@@ -30,12 +30,13 @@ body {
   padding:25px;
   border-radius:12px;
   width:300px;
+
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 
-.login-box input{
+.login-box input, .login-box select{
   width:100%;
   padding:10px;
   margin-top:10px;
@@ -73,7 +74,7 @@ body {
 
 .container { max-width:1200px; margin:auto; }
 
-/* 🔥 MENU NOVO */
+/* 🔥 MENU ATUALIZADO */
 .menu {
   display: flex;
   gap: 12px;
@@ -98,12 +99,10 @@ body {
   transition: all 0.2s ease;
 }
 
-/* Hover */
 .menu-btn:hover {
   background: #e5e7eb;
 }
 
-/* 🔥 ATIVO VERMELHO */
 .menu-btn.ativo {
   background: #dc2626;
   color: white;
@@ -235,35 +234,31 @@ tr:hover { background:#f9fafb; }
 
 <body>
 
+<!-- LOGIN -->
+<div class="login-overlay" id="loginBox">
+  <div class="login-box">
+    <h3>Login</h3>
+
+    <input type="text" id="user" placeholder="Usuário">
+    <input type="password" id="pass" placeholder="Senha">
+
+    <button onclick="login()">Entrar</button>
+
+    <p id="erro" style="color:red;font-size:12px;"></p>
+  </div>
+</div>
+
 <div class="container">
 
 <div class="user-bar">
-  <span>👤 admin (supervisor)</span>
-  <button>Sair</button>
+  <span id="usuarioLogado"></span>
+  <button onclick="logout()">Sair</button>
 </div>
 
-<!-- 🔥 MENU NOVO -->
+<!-- 🔥 MENU -->
 <div class="menu">
   <a href="index.html" class="menu-btn ativo">📊 Dashboard</a>
   <a href="ranking.html" class="menu-btn">🏆 Ranking</a>
 </div>
 
-<div class="pagina ativa">
-
-<div class="topbar">
-  <div class="topbar-content">
-    <img src="https://i.ibb.co/rjpBZ8P/Logo-RBT-Perfil.jpg" class="logo">
-    <span>Monitoramento - Metas equipes externa</span>
-  </div>
-</div>
-
-<div class="card">
-  <h2>Metas equipes</h2>
-</div>
-
-</div>
-
-</div>
-
-</body>
-</html>
+<!-- RESTANTE DO CÓDIGO CONTINUA IGUAL -->
