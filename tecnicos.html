@@ -3,29 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <title>Pontuação Técnicos</title>
-<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+  font-family: Arial;
+  background:#f5f7fa;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th, td{
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#4CAF50;
+  color:white;
+}
+
+tr:nth-child(even){
+  background:#f2f2f2;
+}
+
+.top{
+  background:#d4edda !important;
+  font-weight:bold;
+}
+
+.meta-ok{
+  color:green;
+  font-weight:bold;
+}
+
+.meta-mid{
+  color:orange;
+  font-weight:bold;
+}
+
+.meta-bad{
+  color:red;
+  font-weight:bold;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>Pontuação - Mês Atual</h1>
+<div class="container">
+  <div class="card">
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Técnico</th>
-      <th>Pontuação</th>
-    </tr>
-  </thead>
-  <tbody id="tabela"></tbody>
-</table>
+    <h1>🏆 Pontuação Técnicos - Mês Atual</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Técnico</th>
+          <th>Pontos</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
+
+  </div>
+</div>
 
 <script>
-const url = "COLE_AQUI_LINK_DA_PLANILHA_JSON";
+
+// 🔗 COLE SEU LINK AQUI
+const url = "https://docs.google.com/spreadsheets/d/ID_DA_PLANILHA/export?format=csv&gid=1995482119";
 
 fetch(url)
-  .then(res => res.json())
-  .then(data => {
+  .then(res => res.text())
+  .then(csv => {
+
+    const linhas = csv.split("\n").map(l => l.split(","));
+
+    const header = linhas[0].map(h => h.trim());
+    const dados = linhas.slice(1);
 
     const hoje = new Date();
     const mesAtual = hoje.getMonth();
@@ -33,14 +112,17 @@ fetch(url)
 
     let pontuacao = {};
 
-    data.forEach(item => {
+    dados.forEach(linha => {
+
+      let item = {};
+      header.forEach((h, i) => item[h] = linha[i]);
 
       const status = item.status;
-      const tipo = item.TipoOS;
+      const tipo = item.TipoOS || "";
       const tecnico = item.name;
       const dataOS = new Date(item.schedule_date);
 
-      if(status !== "Concluido") return;
+      if(!tecnico || status !== "Concluido") return;
 
       if(dataOS.getMonth() !== mesAtual || dataOS.getFullYear() !== anoAtual) return;
 
@@ -64,19 +146,38 @@ fetch(url)
 
     const tabela = document.getElementById("tabela");
 
-    Object.entries(pontuacao)
-      .sort((a,b) => b[1] - a[1])
-      .forEach(([nome, pontos]) => {
+    let ranking = Object.entries(pontuacao)
+      .sort((a,b) => b[1] - a[1]);
 
-        tabela.innerHTML += `
-          <tr>
-            <td>${nome}</td>
-            <td>${pontos}</td>
-          </tr>
-        `;
-      });
+    ranking.forEach(([nome, pontos], index) => {
 
+      let statusMeta = "🔴 Abaixo";
+      let classe = "meta-bad";
+
+      if(pontos >= 200){
+        statusMeta = "🟢 Meta batida";
+        classe = "meta-ok";
+      } else if(pontos >= 150){
+        statusMeta = "🟡 Quase lá";
+        classe = "meta-mid";
+      }
+
+      tabela.innerHTML += `
+        <tr class="${index < 3 ? 'top' : ''}">
+          <td>${index + 1}</td>
+          <td>${nome}</td>
+          <td>${pontos}</td>
+          <td class="${classe}">${statusMeta}</td>
+        </tr>
+      `;
+    });
+
+  })
+  .catch(err => {
+    document.body.innerHTML += "<p>Erro ao carregar dados</p>";
+    console.error(err);
   });
+
 </script>
 
 </body>
