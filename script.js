@@ -16,22 +16,17 @@ async function buscarDados() {
 }
 
 function calcularPontuacao(dados) {
-  const hoje = new Date();
-  const mesAtual = hoje.getMonth();
-  const anoAtual = hoje.getFullYear();
 
   let pontuacao = {};
 
   dados.forEach(item => {
 
-    const status = item.status;
+    const status = item.status || "";
     const tipo = item.TipoOS || "";
     const tecnico = item.name;
-    const dataOS = new Date(item.schedule_date);
 
-    if(!tecnico || status !== "Concluido") return;
-
-    if(dataOS.getMonth() !== mesAtual || dataOS.getFullYear() !== anoAtual) return;
+    // 🔥 corrigido
+    if(!status.toLowerCase().includes("conclu")) return;
 
     let pontos = 2;
 
