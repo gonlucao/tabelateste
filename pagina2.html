@@ -4,106 +4,113 @@
 <meta charset="UTF-8">
 <title>Ranking de Técnicos</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
 
 body{
-  font-family: Arial, sans-serif;
-  background:#f4f6f9;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #1f2937, #111827);
+  margin:0;
+  color:white;
 }
 
+/* CONTAINER */
 .container{
-  max-width:900px;
-  margin:40px auto;
-  padding:0 20px;
+  max-width:1100px;
+  margin:auto;
+  padding:30px;
 }
 
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.header h1{
+  font-size:26px;
+}
+
+.voltar{
+  text-decoration:none;
+  color:#9ca3af;
+}
+
+/* CARD */
 .card{
-  background:#fff;
-  padding:25px;
+  background:#1f2937;
+  padding:20px;
   border-radius:12px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
-h1{
-  text-align:center;
-  margin-bottom:20px;
-}
-
+/* TOP BAR */
 .top-bar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-  gap:10px;
+  margin-bottom:15px;
 }
 
 #contador{
-  font-weight:bold;
-  color:#333;
+  color:#9ca3af;
 }
 
 input{
-  padding:10px;
-  border:1px solid #ccc;
+  background:#111827;
+  border:1px solid #374151;
+  color:white;
+  padding:8px;
   border-radius:6px;
-  width:220px;
 }
 
+/* TABELA */
 table{
   width:100%;
   border-collapse:collapse;
 }
 
 th{
-  background:#007bff;
-  color:white;
-  padding:12px;
   text-align:left;
+  padding:12px;
+  background:#111827;
+  color:#9ca3af;
 }
 
 td{
   padding:12px;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #374151;
 }
 
 tr:hover{
-  background:#f1f1f1;
+  background:#111827;
 }
 
+/* DESTAQUE */
 .top{
-  background:#fff3cd;
-  font-weight:bold;
+  background:#064e3b !important;
 }
 
+/* BOLAS */
 .bola{
-  width:12px;
-  height:12px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   display:inline-block;
   margin-right:8px;
 }
 
-/* CORES */
-.ouro{background:gold;}
-.prata{background:silver;}
-.bronze{background:#cd7f32;}
-.verde{background:green;}
-.amarelo{background:orange;}
-.vermelho{background:red;}
+.ouro{background:#fbbf24;}
+.prata{background:#9ca3af;}
+.bronze{background:#d97706;}
 
-.link{
-  display:inline-block;
-  margin-bottom:15px;
-  text-decoration:none;
-  color:#007bff;
-  font-weight:bold;
-}
+.verde{background:#22c55e;}
+.amarelo{background:#f59e0b;}
+.vermelho{background:#ef4444;}
+
 </style>
 
 </head>
@@ -111,11 +118,13 @@ tr:hover{
 <body>
 
 <div class="container">
-  <div class="card">
 
-    <a href="tecnicos.html" class="link">← Voltar</a>
-
+  <div class="header">
     <h1>🏆 Ranking de Técnicos</h1>
+    <a href="index.html" class="voltar">← Voltar</a>
+  </div>
+
+  <div class="card">
 
     <div class="top-bar">
       <div id="contador"></div>
@@ -168,21 +177,22 @@ tr:hover{
     </table>
 
   </div>
+
 </div>
 
 <script>
 
-// 📅 CONTADOR DE DIAS
+// CONTADOR
 function atualizarContador(){
   const hoje = new Date();
   const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
   const diasRestantes = ultimoDia.getDate() - hoje.getDate();
 
   document.getElementById("contador").innerText =
-    `Dias restantes no mês: ${diasRestantes}`;
+    `Dias restantes: ${diasRestantes}`;
 }
 
-// 🔍 BUSCA
+// BUSCA
 document.getElementById("busca").addEventListener("input", function(){
   const filtro = this.value.toLowerCase();
   const linhas = document.querySelectorAll("#tabela tr");
@@ -193,7 +203,6 @@ document.getElementById("busca").addEventListener("input", function(){
   });
 });
 
-// 🚀 INICIAR
 atualizarContador();
 
 </script>
