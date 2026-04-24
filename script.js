@@ -1,4 +1,4 @@
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/ID_DA_PLANILHA/export?format=csv&gid=1995482119";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/export?format=csv&gid=1995482119";
 
 async function buscarDados() {
   const res = await fetch(SHEET_URL);
