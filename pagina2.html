@@ -2,208 +2,317 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Ranking de Técnicos</title>
+<title>Ranking Mensal</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
+.container { max-width:1200px; margin:auto; }
 
-body{
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #1f2937, #111827);
-  margin:0;
-  color:white;
-}
-
-/* CONTAINER */
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:30px;
-}
-
-/* HEADER */
-.header{
+/* 🔥 USER BAR */
+.user-bar{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
+  justify-content:flex-end;
+  gap:10px;
+  margin-bottom:10px;
 }
-
-.header h1{
-  font-size:26px;
-}
-
-.voltar{
-  text-decoration:none;
-  color:#9ca3af;
-}
-
-/* CARD */
-.card{
-  background:#1f2937;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* TOP BAR */
-.top-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-#contador{
-  color:#9ca3af;
-}
-
-input{
-  background:#111827;
-  border:1px solid #374151;
+.user-bar button{
+  background:#dc2626;
   color:white;
-  padding:8px;
+  border:none;
+  padding:6px 10px;
   border-radius:6px;
+  cursor:pointer;
 }
 
-/* TABELA */
-table{
+.menu { display:flex; gap:10px; margin-bottom:15px; }
+.menu button{
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#e5e7eb;
+  font-weight:600;
+}
+.menu button.ativo{ background:#dc2626; color:white; }
+
+.topbar {
+  background: linear-gradient(90deg,#b91c1c,#dc2626);
+  padding:15px;
+  border-radius:12px;
+  color:white;
+  margin-bottom:10px;
+}
+
+#contadorDias{
+  margin-bottom:15px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  display:inline-block;
+  font-weight:600;
+}
+
+.filtros { margin-bottom:15px; }
+.filtros input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
   width:100%;
-  border-collapse:collapse;
 }
 
-th{
-  text-align:left;
-  padding:12px;
-  background:#111827;
-  color:#9ca3af;
+.top3 { display:flex; gap:15px; margin-bottom:20px; }
+.top3-card {
+  flex:1;
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 4px 10px #0001;
 }
 
-td{
-  padding:12px;
-  border-bottom:1px solid #374151;
-}
+.card { background:white; padding:20px; border-radius:16px; }
 
-tr:hover{
-  background:#111827;
-}
+table { width:100%; border-collapse:collapse; }
+th,td { padding:12px; border-bottom:1px solid #eee; text-align:center; }
+th { cursor:pointer; }
+th:first-child, td:first-child { text-align:left; }
 
-/* DESTAQUE */
-.top{
-  background:#064e3b !important;
-}
+tr:nth-child(even){ background:#fafafa; }
 
-/* BOLAS */
-.bola{
+.status {
+  display:inline-block;
   width:10px;
   height:10px;
   border-radius:50%;
-  display:inline-block;
   margin-right:8px;
 }
-
-.ouro{background:#fbbf24;}
-.prata{background:#9ca3af;}
-.bronze{background:#d97706;}
-
-.verde{background:#22c55e;}
+.verde{background:#16a34a;}
 .amarelo{background:#f59e0b;}
-.vermelho{background:#ef4444;}
+.vermelho{background:#dc2626;}
+
+.seta-up { color:#16a34a; font-weight:bold; }
+.seta-down { color:#dc2626; font-weight:bold; }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="header">
-    <h1>🏆 Ranking de Técnicos</h1>
-    <a href="index.html" class="voltar">← Voltar</a>
-  </div>
+<!-- 🔥 USER BAR -->
+<div class="user-bar">
+  <span id="usuarioLogado"></span>
+  <button onclick="logout()">Sair</button>
+</div>
 
-  <div class="card">
+<div class="menu">
+  <button onclick="window.location.href='index.html'">📊 Dashboard</button>
+  <button class="ativo">🏆 Ranking</button>
+</div>
 
-    <div class="top-bar">
-      <div id="contador"></div>
-      <input type="text" id="busca" placeholder="Buscar técnico...">
-    </div>
+<div class="topbar">
+  <h2 id="tituloMes"></h2>
+</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Técnico</th>
-          <th>Pontos</th>
-        </tr>
-      </thead>
+<div id="contadorDias"></div>
 
-      <tbody id="tabela">
+<div class="filtros">
+  <input type="text" id="busca" placeholder="Buscar técnico...">
+</div>
 
-        <!-- EXEMPLO -->
-        <tr class="top">
-          <td>1</td>
-          <td><span class="bola ouro"></span>João Silva</td>
-          <td>250</td>
-        </tr>
+<div class="top3" id="top3"></div>
 
-        <tr class="top">
-          <td>2</td>
-          <td><span class="bola prata"></span>Maria Souza</td>
-          <td>210</td>
-        </tr>
-
-        <tr class="top">
-          <td>3</td>
-          <td><span class="bola bronze"></span>Carlos Lima</td>
-          <td>180</td>
-        </tr>
-
-        <tr>
-          <td>4</td>
-          <td><span class="bola verde"></span>Ana Costa</td>
-          <td>160</td>
-        </tr>
-
-        <tr>
-          <td>5</td>
-          <td><span class="bola vermelho"></span>Pedro Rocha</td>
-          <td>120</td>
-        </tr>
-
-      </tbody>
-    </table>
-
-  </div>
+<div class="card">
+<table>
+<thead>
+<tr>
+<th onclick="ordenar()">#</th>
+<th>Técnico</th>
+<th onclick="ordenar()">Pontuação ⇅</th>
+<th>Evolução</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
 
 </div>
 
 <script>
 
-// CONTADOR
-function atualizarContador(){
-  const hoje = new Date();
-  const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
-  const diasRestantes = ultimoDia.getDate() - hoje.getDate();
+/* 🔥 VALIDA LOGIN E MOSTRA USUÁRIO */
+window.addEventListener("load", () => {
+  let logado = JSON.parse(localStorage.getItem("logado"));
 
-  document.getElementById("contador").innerText =
-    `Dias restantes: ${diasRestantes}`;
-}
+  if(!logado){
+    window.location.href = "index.html";
+    return;
+  }
 
-// BUSCA
-document.getElementById("busca").addEventListener("input", function(){
-  const filtro = this.value.toLowerCase();
-  const linhas = document.querySelectorAll("#tabela tr");
-
-  linhas.forEach(linha => {
-    const nome = linha.children[1].innerText.toLowerCase();
-    linha.style.display = nome.includes(filtro) ? "" : "none";
-  });
+  document.getElementById("usuarioLogado").innerText =
+    `👤 ${logado.nome} (${logado.perfil})`;
 });
 
-atualizarContador();
+/* 🔥 LOGOUT */
+function logout(){
+  localStorage.removeItem("logado");
+  window.location.href = "index.html";
+}
+
+/* ===== SEU CÓDIGO ORIGINAL (INTACTO) ===== */
+
+const abas = ["1836732217","576248296","1758926410"];
+
+let lista = [];
+let listaOriginal = [];
+let ordemDesc = true;
+
+function getNomeMes(){
+  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  return meses[new Date().getMonth()];
+}
+
+function getMesAtual(){
+  return Math.min(new Date().getMonth(), abas.length-1);
+}
+
+function calcularDiasRestantes(){
+  const hoje = new Date();
+  const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
+  const diff = Math.ceil((ultimoDia - hoje)/(1000*60*60*24));
+
+  const el = document.getElementById("contadorDias");
+
+  if(diff <= 3) el.style.color="#dc2626";
+  else if(diff <= 7) el.style.color="#f59e0b";
+  else el.style.color="#16a34a";
+
+  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
+}
+
+async function carregarMes(gid){
+  const url=`https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res=await fetch(url);
+  const text=await res.text();
+  const json=JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+  return json.table.rows;
+}
+
+async function carregarRanking(){
+
+  document.getElementById("tituloMes").innerText =
+    "Ranking do mês de " + getNomeMes();
+
+  const mesAtual = getMesAtual();
+  const mesAnterior = Math.max(0, mesAtual-1);
+
+  const atual = await carregarMes(abas[mesAtual]);
+  const anterior = await carregarMes(abas[mesAnterior]);
+
+  let mapaAnterior = {};
+
+  anterior.forEach((r,i)=>{
+    if(i===0) return;
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+    if(nome) mapaAnterior[nome]=total;
+  });
+
+  listaOriginal = [];
+
+  atual.forEach((r,i)=>{
+    if(i===0) return;
+
+    let nome=r.c[0]?.v;
+    let total=Number(r.c[19]?.v)||0;
+
+    if(!nome) return;
+
+    let anteriorVal = mapaAnterior[nome] || 0;
+
+    listaOriginal.push({
+      nome,
+      total,
+      evolucao: total - anteriorVal
+    });
+  });
+
+  aplicarFiltros();
+}
+
+function aplicarFiltros(){
+  const busca = document.getElementById("busca").value.toLowerCase();
+
+  lista = listaOriginal.filter(t=>{
+    return t.nome.toLowerCase().includes(busca);
+  });
+
+  ordenarRender();
+}
+
+document.getElementById("busca").addEventListener("input", aplicarFiltros);
+
+function ordenar(){
+  ordemDesc = !ordemDesc;
+  ordenarRender();
+}
+
+function ordenarRender(){
+  lista.sort((a,b)=> ordemDesc ? b.total-a.total : a.total-b.total);
+  renderTop3();
+  renderTabela();
+}
+
+function renderTop3(){
+  let top3=document.getElementById("top3");
+  top3.innerHTML="";
+
+  const medalhas=["🥇","🥈","🥉"];
+
+  lista.slice(0,3).forEach((t,i)=>{
+    top3.innerHTML+=`
+      <div class="top3-card">
+        <div>${medalhas[i]}</div>
+        <strong>${t.nome}</strong>
+        <div>${t.total}</div>
+      </div>
+    `;
+  });
+}
+
+function renderTabela(){
+  let tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+
+  lista.forEach((t,i)=>{
+
+    let cor="vermelho";
+    if(i<3) cor="verde";
+    else if(t.total>=170) cor="amarelo";
+
+    let evo = t.evolucao > 0 
+      ? `<span class="seta-up">↑ ${t.evolucao}</span>`
+      : t.evolucao < 0 
+      ? `<span class="seta-down">↓ ${Math.abs(t.evolucao)}</span>`
+      : "-";
+
+    tbody.innerHTML+=`
+      <tr>
+        <td>${i+1}</td>
+        <td><span class="status ${cor}"></span>${t.nome}</td>
+        <td>${t.total}</td>
+        <td>${evo}</td>
+      </tr>
+    `;
+  });
+}
+
+/* INICIALIZAÇÃO */
+carregarRanking();
+calcularDiasRestantes();
 
 </script>
 
