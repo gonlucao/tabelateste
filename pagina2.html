@@ -5,68 +5,79 @@
 <title>Ranking de Técnicos</title>
 
 <style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
 body{
-  font-family: Arial;
-  background:#f5f7fa;
-  padding:20px;
+  font-family: Arial, sans-serif;
+  background:#f4f6f9;
 }
 
 .container{
-  max-width:800px;
-  margin:auto;
+  max-width:900px;
+  margin:40px auto;
+  padding:0 20px;
 }
 
 .card{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  background:#fff;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
 
 h1{
   text-align:center;
+  margin-bottom:20px;
 }
 
-.top-info{
+.top-bar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:15px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:10px;
 }
 
 #contador{
   font-weight:bold;
+  color:#333;
 }
 
 input{
-  padding:8px;
-  width:200px;
-  border-radius:6px;
+  padding:10px;
   border:1px solid #ccc;
+  border-radius:6px;
+  width:220px;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:20px;
 }
 
-th, td{
+th{
+  background:#007bff;
+  color:white;
   padding:12px;
   text-align:left;
 }
 
-th{
-  background:#2196F3;
-  color:white;
+td{
+  padding:12px;
+  border-bottom:1px solid #eee;
 }
 
-tr:nth-child(even){
-  background:#f2f2f2;
+tr:hover{
+  background:#f1f1f1;
 }
 
 .top{
-  background:#ffeaa7 !important;
+  background:#fff3cd;
   font-weight:bold;
 }
 
@@ -78,18 +89,19 @@ tr:nth-child(even){
   margin-right:8px;
 }
 
-.verde{ background:green; }
-.amarelo{ background:orange; }
-.vermelho{ background:red; }
-.ouro{ background:gold; }
-.prata{ background:silver; }
-.bronze{ background:#cd7f32; }
+/* CORES */
+.ouro{background:gold;}
+.prata{background:silver;}
+.bronze{background:#cd7f32;}
+.verde{background:green;}
+.amarelo{background:orange;}
+.vermelho{background:red;}
 
 .link{
   display:inline-block;
-  margin-bottom:10px;
+  margin-bottom:15px;
   text-decoration:none;
-  color:#2196F3;
+  color:#007bff;
   font-weight:bold;
 }
 </style>
@@ -101,11 +113,11 @@ tr:nth-child(even){
 <div class="container">
   <div class="card">
 
-    <a href="tecnicos.html" class="link">← Voltar para técnicos</a>
+    <a href="tecnicos.html" class="link">← Voltar</a>
 
     <h1>🏆 Ranking de Técnicos</h1>
 
-    <div class="top-info">
+    <div class="top-bar">
       <div id="contador"></div>
       <input type="text" id="busca" placeholder="Buscar técnico...">
     </div>
@@ -118,9 +130,10 @@ tr:nth-child(even){
           <th>Pontos</th>
         </tr>
       </thead>
+
       <tbody id="tabela">
 
-        <!-- EXEMPLO MANUAL -->
+        <!-- EXEMPLO -->
         <tr class="top">
           <td>1</td>
           <td><span class="bola ouro"></span>João Silva</td>
