@@ -2,317 +2,190 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Ranking Mensal</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Ranking de Técnicos</title>
 
 <style>
-body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
-.container { max-width:1200px; margin:auto; }
-
-/* 🔥 USER BAR */
-.user-bar{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-bottom:10px;
-}
-.user-bar button{
-  background:#dc2626;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  cursor:pointer;
+body{
+  font-family: Arial;
+  background:#f5f7fa;
+  padding:20px;
 }
 
-.menu { display:flex; gap:10px; margin-bottom:15px; }
-.menu button{
-  padding:10px 18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  background:#e5e7eb;
-  font-weight:600;
-}
-.menu button.ativo{ background:#dc2626; color:white; }
-
-.topbar {
-  background: linear-gradient(90deg,#b91c1c,#dc2626);
-  padding:15px;
-  border-radius:12px;
-  color:white;
-  margin-bottom:10px;
+.container{
+  max-width:800px;
+  margin:auto;
 }
 
-#contadorDias{
-  margin-bottom:15px;
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  display:inline-block;
-  font-weight:600;
-}
-
-.filtros { margin-bottom:15px; }
-.filtros input{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  width:100%;
-}
-
-.top3 { display:flex; gap:15px; margin-bottom:20px; }
-.top3-card {
-  flex:1;
+.card{
   background:white;
   padding:20px;
-  border-radius:14px;
-  text-align:center;
-  box-shadow:0 4px 10px #0001;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
-.card { background:white; padding:20px; border-radius:16px; }
+h1{
+  text-align:center;
+}
 
-table { width:100%; border-collapse:collapse; }
-th,td { padding:12px; border-bottom:1px solid #eee; text-align:center; }
-th { cursor:pointer; }
-th:first-child, td:first-child { text-align:left; }
+.top-info{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
 
-tr:nth-child(even){ background:#fafafa; }
+#contador{
+  font-weight:bold;
+}
 
-.status {
-  display:inline-block;
-  width:10px;
-  height:10px;
+input{
+  padding:8px;
+  width:200px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th, td{
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#2196F3;
+  color:white;
+}
+
+tr:nth-child(even){
+  background:#f2f2f2;
+}
+
+.top{
+  background:#ffeaa7 !important;
+  font-weight:bold;
+}
+
+.bola{
+  width:12px;
+  height:12px;
   border-radius:50%;
+  display:inline-block;
   margin-right:8px;
 }
-.verde{background:#16a34a;}
-.amarelo{background:#f59e0b;}
-.vermelho{background:#dc2626;}
 
-.seta-up { color:#16a34a; font-weight:bold; }
-.seta-down { color:#dc2626; font-weight:bold; }
+.verde{ background:green; }
+.amarelo{ background:orange; }
+.vermelho{ background:red; }
+.ouro{ background:gold; }
+.prata{ background:silver; }
+.bronze{ background:#cd7f32; }
 
+.link{
+  display:inline-block;
+  margin-bottom:10px;
+  text-decoration:none;
+  color:#2196F3;
+  font-weight:bold;
+}
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
+  <div class="card">
 
-<!-- 🔥 USER BAR -->
-<div class="user-bar">
-  <span id="usuarioLogado"></span>
-  <button onclick="logout()">Sair</button>
+    <a href="tecnicos.html" class="link">← Voltar para técnicos</a>
+
+    <h1>🏆 Ranking de Técnicos</h1>
+
+    <div class="top-info">
+      <div id="contador"></div>
+      <input type="text" id="busca" placeholder="Buscar técnico...">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Técnico</th>
+          <th>Pontos</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
+
+  </div>
 </div>
 
-<div class="menu">
-  <button onclick="window.location.href='index.html'">📊 Dashboard</button>
-  <button class="ativo">🏆 Ranking</button>
-</div>
-
-<div class="topbar">
-  <h2 id="tituloMes"></h2>
-</div>
-
-<div id="contadorDias"></div>
-
-<div class="filtros">
-  <input type="text" id="busca" placeholder="Buscar técnico...">
-</div>
-
-<div class="top3" id="top3"></div>
-
-<div class="card">
-<table>
-<thead>
-<tr>
-<th onclick="ordenar()">#</th>
-<th>Técnico</th>
-<th onclick="ordenar()">Pontuação ⇅</th>
-<th>Evolução</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-</div>
-
-</div>
+<!-- Script central -->
+<script src="script.js"></script>
 
 <script>
 
-/* 🔥 VALIDA LOGIN E MOSTRA USUÁRIO */
-window.addEventListener("load", () => {
-  let logado = JSON.parse(localStorage.getItem("logado"));
-
-  if(!logado){
-    window.location.href = "index.html";
-    return;
-  }
-
-  document.getElementById("usuarioLogado").innerText =
-    `👤 ${logado.nome} (${logado.perfil})`;
-});
-
-/* 🔥 LOGOUT */
-function logout(){
-  localStorage.removeItem("logado");
-  window.location.href = "index.html";
-}
-
-/* ===== SEU CÓDIGO ORIGINAL (INTACTO) ===== */
-
-const abas = ["1836732217","576248296","1758926410"];
-
-let lista = [];
-let listaOriginal = [];
-let ordemDesc = true;
-
-function getNomeMes(){
-  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  return meses[new Date().getMonth()];
-}
-
-function getMesAtual(){
-  return Math.min(new Date().getMonth(), abas.length-1);
-}
-
-function calcularDiasRestantes(){
+// 📅 CONTADOR DE DIAS RESTANTES
+function atualizarContador(){
   const hoje = new Date();
   const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
-  const diff = Math.ceil((ultimoDia - hoje)/(1000*60*60*24));
+  const diasRestantes = ultimoDia.getDate() - hoje.getDate();
 
-  const el = document.getElementById("contadorDias");
-
-  if(diff <= 3) el.style.color="#dc2626";
-  else if(diff <= 7) el.style.color="#f59e0b";
-  else el.style.color="#16a34a";
-
-  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
+  document.getElementById("contador").innerText =
+    `Dias restantes no mês: ${diasRestantes}`;
 }
 
-async function carregarMes(gid){
-  const url=`https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
-  const res=await fetch(url);
-  const text=await res.text();
-  const json=JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
-  return json.table.rows;
-}
+// 🔍 BUSCA EM TEMPO REAL
+document.getElementById("busca").addEventListener("input", function(){
+  const filtro = this.value.toLowerCase();
+  const linhas = document.querySelectorAll("#tabela tr");
+
+  linhas.forEach(linha => {
+    const nome = linha.children[1].innerText.toLowerCase();
+    linha.style.display = nome.includes(filtro) ? "" : "none";
+  });
+});
 
 async function carregarRanking(){
 
-  document.getElementById("tituloMes").innerText =
-    "Ranking do mês de " + getNomeMes();
+  const dados = await buscarDados();
+  const ranking = calcularPontuacao(dados);
 
-  const mesAtual = getMesAtual();
-  const mesAnterior = Math.max(0, mesAtual-1);
+  const tabela = document.getElementById("tabela");
 
-  const atual = await carregarMes(abas[mesAtual]);
-  const anterior = await carregarMes(abas[mesAnterior]);
+  ranking.forEach(([nome, pontos], index) => {
 
-  let mapaAnterior = {};
+    let corMeta = "vermelho";
 
-  anterior.forEach((r,i)=>{
-    if(i===0) return;
-    let nome=r.c[0]?.v;
-    let total=Number(r.c[19]?.v)||0;
-    if(nome) mapaAnterior[nome]=total;
-  });
+    if(pontos >= 200) corMeta = "verde";
+    else if(pontos >= 150) corMeta = "amarelo";
 
-  listaOriginal = [];
+    let corPosicao = "";
+    if(index === 0) corPosicao = "ouro";
+    else if(index === 1) corPosicao = "prata";
+    else if(index === 2) corPosicao = "bronze";
 
-  atual.forEach((r,i)=>{
-    if(i===0) return;
-
-    let nome=r.c[0]?.v;
-    let total=Number(r.c[19]?.v)||0;
-
-    if(!nome) return;
-
-    let anteriorVal = mapaAnterior[nome] || 0;
-
-    listaOriginal.push({
-      nome,
-      total,
-      evolucao: total - anteriorVal
-    });
-  });
-
-  aplicarFiltros();
-}
-
-function aplicarFiltros(){
-  const busca = document.getElementById("busca").value.toLowerCase();
-
-  lista = listaOriginal.filter(t=>{
-    return t.nome.toLowerCase().includes(busca);
-  });
-
-  ordenarRender();
-}
-
-document.getElementById("busca").addEventListener("input", aplicarFiltros);
-
-function ordenar(){
-  ordemDesc = !ordemDesc;
-  ordenarRender();
-}
-
-function ordenarRender(){
-  lista.sort((a,b)=> ordemDesc ? b.total-a.total : a.total-b.total);
-  renderTop3();
-  renderTabela();
-}
-
-function renderTop3(){
-  let top3=document.getElementById("top3");
-  top3.innerHTML="";
-
-  const medalhas=["🥇","🥈","🥉"];
-
-  lista.slice(0,3).forEach((t,i)=>{
-    top3.innerHTML+=`
-      <div class="top3-card">
-        <div>${medalhas[i]}</div>
-        <strong>${t.nome}</strong>
-        <div>${t.total}</div>
-      </div>
-    `;
-  });
-}
-
-function renderTabela(){
-  let tbody=document.getElementById("tbody");
-  tbody.innerHTML="";
-
-  lista.forEach((t,i)=>{
-
-    let cor="vermelho";
-    if(i<3) cor="verde";
-    else if(t.total>=170) cor="amarelo";
-
-    let evo = t.evolucao > 0 
-      ? `<span class="seta-up">↑ ${t.evolucao}</span>`
-      : t.evolucao < 0 
-      ? `<span class="seta-down">↓ ${Math.abs(t.evolucao)}</span>`
-      : "-";
-
-    tbody.innerHTML+=`
-      <tr>
-        <td>${i+1}</td>
-        <td><span class="status ${cor}"></span>${t.nome}</td>
-        <td>${t.total}</td>
-        <td>${evo}</td>
+    tabela.innerHTML += `
+      <tr class="${index < 3 ? 'top' : ''}">
+        <td>${index + 1}</td>
+        <td>
+          <span class="bola ${corPosicao || corMeta}"></span>
+          ${nome}
+        </td>
+        <td>${pontos}</td>
       </tr>
     `;
   });
+
 }
 
-/* INICIALIZAÇÃO */
+// 🚀 INICIALIZAÇÃO
+atualizarContador();
 carregarRanking();
-calcularDiasRestantes();
 
 </script>
 
