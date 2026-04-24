@@ -101,7 +101,7 @@ tr:nth-child(even){
 <div class="container">
   <div class="card">
 
-    <a href="tecnicos.html" class="link">← Voltar para técnicos</a>
+    <a href="tecnicos.html" class="link">← Voltar</a>
 
     <h1>🏆 Ranking de Técnicos</h1>
 
@@ -124,12 +124,12 @@ tr:nth-child(even){
   </div>
 </div>
 
-<!-- Script central -->
-<script src="script.js"></script>
-
 <script>
 
-// 📅 CONTADOR DE DIAS RESTANTES
+// 🔗 LINK CORRETO DA PLANILHA (CSV)
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/export?format=csv&gid=1995482119";
+
+// 📅 CONTADOR DE DIAS
 function atualizarContador(){
   const hoje = new Date();
   const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
@@ -139,7 +139,7 @@ function atualizarContador(){
     `Dias restantes no mês: ${diasRestantes}`;
 }
 
-// 🔍 BUSCA EM TEMPO REAL
+// 🔍 BUSCA
 document.getElementById("busca").addEventListener("input", function(){
   const filtro = this.value.toLowerCase();
   const linhas = document.querySelectorAll("#tabela tr");
@@ -150,40 +150,88 @@ document.getElementById("busca").addEventListener("input", function(){
   });
 });
 
+// 🚀 FUNÇÃO PRINCIPAL
 async function carregarRanking(){
 
-  const dados = await buscarDados();
-  const ranking = calcularPontuacao(dados);
+  try {
+    const res = await fetch(SHEET_URL);
+    const csv = await res.text();
 
-  const tabela = document.getElementById("tabela");
+    const linhas = csv.split("\n").map(l => l.split(","));
+    const header = linhas[0].map(h => h.trim());
+    const dados = linhas.slice(1);
 
-  ranking.forEach(([nome, pontos], index) => {
+    let pontuacao = {};
 
-    let corMeta = "vermelho";
+    dados.forEach(linha => {
 
-    if(pontos >= 200) corMeta = "verde";
-    else if(pontos >= 150) corMeta = "amarelo";
+      let item = {};
+      header.forEach((h, i) => item[h] = linha[i]);
 
-    let corPosicao = "";
-    if(index === 0) corPosicao = "ouro";
-    else if(index === 1) corPosicao = "prata";
-    else if(index === 2) corPosicao = "bronze";
+      const status = (item.status || "").toLowerCase();
+      const tipo = item.TipoOS || "";
+      const tecnico = item.name;
 
-    tabela.innerHTML += `
-      <tr class="${index < 3 ? 'top' : ''}">
-        <td>${index + 1}</td>
-        <td>
-          <span class="bola ${corPosicao || corMeta}"></span>
-          ${nome}
-        </td>
-        <td>${pontos}</td>
-      </tr>
-    `;
-  });
+      // 🔥 FILTRO DE CONCLUÍDO
+      if(!status.includes("conclu")) return;
+
+      if(!tecnico) return;
+
+      let pontos = 2;
+
+      if(
+        tipo.includes("Instalação") ||
+        tipo.includes("Migração") ||
+        tipo.includes("Troca de Endereço")
+      ){
+        pontos = 3;
+      }
+
+      if(!pontuacao[tecnico]){
+        pontuacao[tecnico] = 0;
+      }
+
+      pontuacao[tecnico] += pontos;
+
+    });
+
+    const ranking = Object.entries(pontuacao)
+      .sort((a,b) => b[1] - a[1]);
+
+    const tabela = document.getElementById("tabela");
+
+    ranking.forEach(([nome, pontos], index) => {
+
+      let corMeta = "vermelho";
+      if(pontos >= 200) corMeta = "verde";
+      else if(pontos >= 150) corMeta = "amarelo";
+
+      let corPosicao = "";
+      if(index === 0) corPosicao = "ouro";
+      else if(index === 1) corPosicao = "prata";
+      else if(index === 2) corPosicao = "bronze";
+
+      tabela.innerHTML += `
+        <tr class="${index < 3 ? 'top' : ''}">
+          <td>${index + 1}</td>
+          <td>
+            <span class="bola ${corPosicao || corMeta}"></span>
+            ${nome}
+          </td>
+          <td>${pontos}</td>
+        </tr>
+      `;
+    });
+
+  } catch (erro) {
+    console.error("Erro:", erro);
+    document.getElementById("tabela").innerHTML =
+      "<tr><td colspan='3'>Erro ao carregar dados</td></tr>";
+  }
 
 }
 
-// 🚀 INICIALIZAÇÃO
+// 🚀 INICIAR
 atualizarContador();
 carregarRanking();
 
