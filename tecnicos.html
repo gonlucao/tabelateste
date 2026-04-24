@@ -1,3 +1,83 @@
-<html>
-  
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Pontuação Técnicos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Pontuação - Mês Atual</h1>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Técnico</th>
+      <th>Pontuação</th>
+    </tr>
+  </thead>
+  <tbody id="tabela"></tbody>
+</table>
+
+<script>
+const url = "COLE_AQUI_LINK_DA_PLANILHA_JSON";
+
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+
+    const hoje = new Date();
+    const mesAtual = hoje.getMonth();
+    const anoAtual = hoje.getFullYear();
+
+    let pontuacao = {};
+
+    data.forEach(item => {
+
+      const status = item.status;
+      const tipo = item.TipoOS;
+      const tecnico = item.name;
+      const dataOS = new Date(item.schedule_date);
+
+      if(status !== "Concluido") return;
+
+      if(dataOS.getMonth() !== mesAtual || dataOS.getFullYear() !== anoAtual) return;
+
+      let pontos = 2;
+
+      if(
+        tipo.includes("Instalação") ||
+        tipo.includes("Migração") ||
+        tipo.includes("Troca de Endereço")
+      ){
+        pontos = 3;
+      }
+
+      if(!pontuacao[tecnico]){
+        pontuacao[tecnico] = 0;
+      }
+
+      pontuacao[tecnico] += pontos;
+
+    });
+
+    const tabela = document.getElementById("tabela");
+
+    Object.entries(pontuacao)
+      .sort((a,b) => b[1] - a[1])
+      .forEach(([nome, pontos]) => {
+
+        tabela.innerHTML += `
+          <tr>
+            <td>${nome}</td>
+            <td>${pontos}</td>
+          </tr>
+        `;
+      });
+
+  });
+</script>
+
+</body>
 </html>
