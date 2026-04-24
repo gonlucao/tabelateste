@@ -101,7 +101,7 @@ tr:nth-child(even){
 <div class="container">
   <div class="card">
 
-    <a href="tecnicos.html" class="link">← Voltar</a>
+    <a href="tecnicos.html" class="link">← Voltar para técnicos</a>
 
     <h1>🏆 Ranking de Técnicos</h1>
 
@@ -118,16 +118,46 @@ tr:nth-child(even){
           <th>Pontos</th>
         </tr>
       </thead>
-      <tbody id="tabela"></tbody>
+      <tbody id="tabela">
+
+        <!-- EXEMPLO MANUAL -->
+        <tr class="top">
+          <td>1</td>
+          <td><span class="bola ouro"></span>João Silva</td>
+          <td>250</td>
+        </tr>
+
+        <tr class="top">
+          <td>2</td>
+          <td><span class="bola prata"></span>Maria Souza</td>
+          <td>210</td>
+        </tr>
+
+        <tr class="top">
+          <td>3</td>
+          <td><span class="bola bronze"></span>Carlos Lima</td>
+          <td>180</td>
+        </tr>
+
+        <tr>
+          <td>4</td>
+          <td><span class="bola verde"></span>Ana Costa</td>
+          <td>160</td>
+        </tr>
+
+        <tr>
+          <td>5</td>
+          <td><span class="bola vermelho"></span>Pedro Rocha</td>
+          <td>120</td>
+        </tr>
+
+      </tbody>
     </table>
 
   </div>
 </div>
 
 <script>
-
-// 🔗 LINK CORRETO DA PLANILHA (CSV)
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/export?format=csv&gid=1995482119";
 
 // 📅 CONTADOR DE DIAS
 function atualizarContador(){
@@ -150,90 +180,8 @@ document.getElementById("busca").addEventListener("input", function(){
   });
 });
 
-// 🚀 FUNÇÃO PRINCIPAL
-async function carregarRanking(){
-
-  try {
-    const res = await fetch(SHEET_URL);
-    const csv = await res.text();
-
-    const linhas = csv.split("\n").map(l => l.split(","));
-    const header = linhas[0].map(h => h.trim());
-    const dados = linhas.slice(1);
-
-    let pontuacao = {};
-
-    dados.forEach(linha => {
-
-      let item = {};
-      header.forEach((h, i) => item[h] = linha[i]);
-
-      const status = (item.status || "").toLowerCase();
-      const tipo = item.TipoOS || "";
-      const tecnico = item.name;
-
-      // 🔥 FILTRO DE CONCLUÍDO
-      if(!status.includes("conclu")) return;
-
-      if(!tecnico) return;
-
-      let pontos = 2;
-
-      if(
-        tipo.includes("Instalação") ||
-        tipo.includes("Migração") ||
-        tipo.includes("Troca de Endereço")
-      ){
-        pontos = 3;
-      }
-
-      if(!pontuacao[tecnico]){
-        pontuacao[tecnico] = 0;
-      }
-
-      pontuacao[tecnico] += pontos;
-
-    });
-
-    const ranking = Object.entries(pontuacao)
-      .sort((a,b) => b[1] - a[1]);
-
-    const tabela = document.getElementById("tabela");
-
-    ranking.forEach(([nome, pontos], index) => {
-
-      let corMeta = "vermelho";
-      if(pontos >= 200) corMeta = "verde";
-      else if(pontos >= 150) corMeta = "amarelo";
-
-      let corPosicao = "";
-      if(index === 0) corPosicao = "ouro";
-      else if(index === 1) corPosicao = "prata";
-      else if(index === 2) corPosicao = "bronze";
-
-      tabela.innerHTML += `
-        <tr class="${index < 3 ? 'top' : ''}">
-          <td>${index + 1}</td>
-          <td>
-            <span class="bola ${corPosicao || corMeta}"></span>
-            ${nome}
-          </td>
-          <td>${pontos}</td>
-        </tr>
-      `;
-    });
-
-  } catch (erro) {
-    console.error("Erro:", erro);
-    document.getElementById("tabela").innerHTML =
-      "<tr><td colspan='3'>Erro ao carregar dados</td></tr>";
-  }
-
-}
-
 // 🚀 INICIAR
 atualizarContador();
-carregarRanking();
 
 </script>
 
