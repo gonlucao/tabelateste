@@ -94,7 +94,6 @@ tr:nth-child(even){ background:#fafafa; }
 .seta-up { color:#16a34a; font-weight:bold; }
 .seta-down { color:#dc2626; font-weight:bold; }
 
-/* 🔵 bolinha cidade */
 .cidade-dot{
   width:18px;
   height:18px;
@@ -142,6 +141,7 @@ tr:nth-child(even){ background:#fafafa; }
 <tr>
 <th onclick="ordenar()">#</th>
 <th>Técnico</th>
+<th onclick="ordenarCidade()">Cidade ⇅</th>
 <th onclick="ordenar()">Pontuação ⇅</th>
 <th>Evolução</th>
 </tr>
@@ -157,12 +157,10 @@ tr:nth-child(even){ background:#fafafa; }
 /* LOGIN */
 window.addEventListener("load", () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
-
   if(!logado){
     window.location.href = "index.html";
     return;
   }
-
   document.getElementById("usuarioLogado").innerText =
     `👤 ${logado.nome} (${logado.perfil})`;
 });
@@ -178,6 +176,7 @@ const GID_FIXO = "1296901336";
 let lista = [];
 let listaOriginal = [];
 let ordemDesc = true;
+let ordenarPorCidade = false;
 
 /* UTIL */
 function getNomeMes(){
@@ -196,21 +195,19 @@ function calcularDiasRestantes(){
   else if(diff <= 7) el.style.color="#f59e0b";
   else el.style.color="#16a34a";
 
-  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
+  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias`;
 }
 
 /* BUSCA */
 async function carregarMes(){
   const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${GID_FIXO}`;
-
   const res = await fetch(url);
   const text = await res.text();
   const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
-
   return json.table.rows;
 }
 
-/* COR CIDADE */
+/* COR */
 function corCidade(cidade){
   const cores = {
     "Gramado": "#16a34a",
@@ -239,12 +236,10 @@ function siglaCidade(cidade){
 
 /* CARREGAR */
 async function carregarRanking(){
-
   document.getElementById("tituloMes").innerText =
     "Ranking do mês de " + getNomeMes();
 
   const dados = await carregarMes();
-
   listaOriginal = [];
 
   dados.forEach((r,i)=>{
@@ -252,20 +247,13 @@ async function carregarRanking(){
 
     let nomeCompleto = r.c[0]?.v;
     let total = Number(r.c[11]?.v) || 0;
-
     if(!nomeCompleto) return;
 
     let cidadeMatch = nomeCompleto.match(/\((.*?)\)/);
     let cidade = cidadeMatch ? cidadeMatch[1] : "Sem cidade";
-
     let nome = nomeCompleto.replace(/\(.*?\)/, "").trim();
 
-    listaOriginal.push({
-      nome,
-      cidade,
-      total,
-      evolucao: 0
-    });
+    listaOriginal.push({ nome, cidade, total, evolucao: 0 });
   });
 
   aplicarFiltros();
@@ -274,11 +262,7 @@ async function carregarRanking(){
 /* FILTRO */
 function aplicarFiltros(){
   const busca = document.getElementById("busca").value.toLowerCase();
-
-  lista = listaOriginal.filter(t=>{
-    return t.nome.toLowerCase().includes(busca);
-  });
-
+  lista = listaOriginal.filter(t => t.nome.toLowerCase().includes(busca));
   ordenarRender();
 }
 
@@ -286,15 +270,26 @@ document.getElementById("busca").addEventListener("input", aplicarFiltros);
 
 /* ORDENAÇÃO */
 function ordenar(){
+  ordenarPorCidade = false;
   ordemDesc = !ordemDesc;
+  ordenarRender();
+}
+
+function ordenarCidade(){
+  ordenarPorCidade = !ordenarPorCidade;
   ordenarRender();
 }
 
 function ordenarRender(){
   lista.sort((a,b)=>{
+    if(ordenarPorCidade){
+      return a.cidade.localeCompare(b.cidade);
+    }
+
     if(b.total !== a.total){
       return ordemDesc ? b.total - a.total : a.total - b.total;
     }
+
     return a.cidade.localeCompare(b.cidade);
   });
 
@@ -326,12 +321,9 @@ function renderTabela(){
   tbody.innerHTML="";
 
   lista.forEach((t,i)=>{
-
     let cor="vermelho";
     if(i<3) cor="verde";
     else if(t.total>=170) cor="amarelo";
-
-    let evo = "-";
 
     tbody.innerHTML+=`
       <tr>
@@ -343,8 +335,9 @@ function renderTabela(){
             ${siglaCidade(t.cidade)}
           </span>
         </td>
+        <td>${t.cidade}</td>
         <td>${t.total}</td>
-        <td>${evo}</td>
+        <td>-</td>
       </tr>
     `;
   });
