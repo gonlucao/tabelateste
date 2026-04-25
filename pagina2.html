@@ -94,13 +94,18 @@ tr:nth-child(even){ background:#fafafa; }
 .seta-up { color:#16a34a; font-weight:bold; }
 .seta-down { color:#dc2626; font-weight:bold; }
 
-/* 🔵 bolinha da cidade */
+/* 🔵 bolinha cidade */
 .cidade-dot{
-  width:10px;
-  height:10px;
+  width:18px;
+  height:18px;
   border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
+  font-weight:600;
+  color:white;
+  margin-left:6px;
 }
 </style>
 </head>
@@ -194,7 +199,7 @@ function calcularDiasRestantes(){
   el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
 }
 
-/* 🔥 BUSCA */
+/* BUSCA */
 async function carregarMes(){
   const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${GID_FIXO}`;
 
@@ -205,16 +210,31 @@ async function carregarMes(){
   return json.table.rows;
 }
 
-/* 🎨 COR POR CIDADE */
+/* COR CIDADE */
 function corCidade(cidade){
   const cores = {
     "Gramado": "#16a34a",
     "Canela": "#2563eb",
     "Nova Petrópolis": "#f59e0b",
     "Dois Irmãos": "#dc2626",
-    "Herval": "#7c3aed"
+    "Herval": "#7c3aed",
+    "Feliz": "#0ea5e9",
+    "Esteio": "#9333ea"
   };
   return cores[cidade] || "#6b7280";
+}
+
+/* SIGLA */
+function siglaCidade(cidade){
+  const siglas = {
+    "Herval": "SMH",
+    "Gramado": "GRA",
+    "Dois Irmãos": "DIR",
+    "Nova Petrópolis": "NP",
+    "Feliz": "FLZ",
+    "Esteio": "EST"
+  };
+  return siglas[cidade] || "--";
 }
 
 /* CARREGAR */
@@ -235,7 +255,6 @@ async function carregarRanking(){
 
     if(!nomeCompleto) return;
 
-    // 🔥 extrai cidade
     let cidadeMatch = nomeCompleto.match(/\((.*?)\)/);
     let cidade = cidadeMatch ? cidadeMatch[1] : "Sem cidade";
 
@@ -273,13 +292,9 @@ function ordenar(){
 
 function ordenarRender(){
   lista.sort((a,b)=>{
-
-    // prioridade = pontuação
     if(b.total !== a.total){
       return ordemDesc ? b.total - a.total : a.total - b.total;
     }
-
-    // desempate = cidade
     return a.cidade.localeCompare(b.cidade);
   });
 
@@ -323,8 +338,10 @@ function renderTabela(){
         <td>${i+1}</td>
         <td>
           <span class="status ${cor}"></span>
-          <span class="cidade-dot" style="background:${corCidade(t.cidade)}"></span>
           ${t.nome}
+          <span class="cidade-dot" style="background:${corCidade(t.cidade)}">
+            ${siglaCidade(t.cidade)}
+          </span>
         </td>
         <td>${t.total}</td>
         <td>${evo}</td>
