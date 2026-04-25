@@ -104,7 +104,6 @@ tr:nth-child(even){ background:#fafafa; }
   font-size:9px;
   font-weight:600;
   color:white;
-  margin-left:6px;
 }
 </style>
 </head>
@@ -285,11 +284,9 @@ function ordenarRender(){
     if(ordenarPorCidade){
       return a.cidade.localeCompare(b.cidade);
     }
-
     if(b.total !== a.total){
       return ordemDesc ? b.total - a.total : a.total - b.total;
     }
-
     return a.cidade.localeCompare(b.cidade);
   });
 
@@ -331,11 +328,12 @@ function renderTabela(){
         <td>
           <span class="status ${cor}"></span>
           ${t.nome}
+        </td>
+        <td title="${t.cidade}">
           <span class="cidade-dot" style="background:${corCidade(t.cidade)}">
             ${siglaCidade(t.cidade)}
           </span>
         </td>
-        <td>${t.cidade}</td>
         <td>${t.total}</td>
         <td>-</td>
       </tr>
