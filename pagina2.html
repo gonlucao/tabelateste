@@ -10,7 +10,6 @@
 body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
 .container { max-width:1200px; margin:auto; }
 
-/* 🔥 USER BAR */
 .user-bar{
   display:flex;
   justify-content:flex-end;
@@ -94,7 +93,6 @@ tr:nth-child(even){ background:#fafafa; }
 
 .seta-up { color:#16a34a; font-weight:bold; }
 .seta-down { color:#dc2626; font-weight:bold; }
-
 </style>
 </head>
 
@@ -102,7 +100,6 @@ tr:nth-child(even){ background:#fafafa; }
 
 <div class="container">
 
-<!-- 🔥 USER BAR -->
 <div class="user-bar">
   <span id="usuarioLogado"></span>
   <button onclick="logout()">Sair</button>
@@ -143,7 +140,7 @@ tr:nth-child(even){ background:#fafafa; }
 
 <script>
 
-/* 🔥 VALIDA LOGIN E MOSTRA USUÁRIO */
+/* LOGIN */
 window.addEventListener("load", () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
 
@@ -156,27 +153,22 @@ window.addEventListener("load", () => {
     `👤 ${logado.nome} (${logado.perfil})`;
 });
 
-/* 🔥 LOGOUT */
 function logout(){
   localStorage.removeItem("logado");
   window.location.href = "index.html";
 }
 
-/* ===== SEU CÓDIGO ORIGINAL (INTACTO) ===== */
-
-const abas = ["1836732217","576248296","1758926410"];
+/* CONFIG */
+const GID_FIXO = "1296901336";
 
 let lista = [];
 let listaOriginal = [];
 let ordemDesc = true;
 
+/* UTIL */
 function getNomeMes(){
   const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   return meses[new Date().getMonth()];
-}
-
-function getMesAtual(){
-  return Math.min(new Date().getMonth(), abas.length-1);
 }
 
 function calcularDiasRestantes(){
@@ -193,56 +185,46 @@ function calcularDiasRestantes(){
   el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
 }
 
-async function carregarMes(gid){
-  const url=`https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
-  const res=await fetch(url);
-  const text=await res.text();
-  const json=JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+/* 🔥 NOVA BUSCA DE DADOS */
+async function carregarMes(){
+  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${GID_FIXO}`;
+
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+
   return json.table.rows;
 }
 
+/* CARREGAR RANKING */
 async function carregarRanking(){
 
   document.getElementById("tituloMes").innerText =
     "Ranking do mês de " + getNomeMes();
 
-  const mesAtual = getMesAtual();
-  const mesAnterior = Math.max(0, mesAtual-1);
-
-  const atual = await carregarMes(abas[mesAtual]);
-  const anterior = await carregarMes(abas[mesAnterior]);
-
-  let mapaAnterior = {};
-
-  anterior.forEach((r,i)=>{
-    if(i===0) return;
-    let nome=r.c[0]?.v;
-    let total=Number(r.c[19]?.v)||0;
-    if(nome) mapaAnterior[nome]=total;
-  });
+  const dados = await carregarMes();
 
   listaOriginal = [];
 
-  atual.forEach((r,i)=>{
+  dados.forEach((r,i)=>{
     if(i===0) return;
 
-    let nome=r.c[0]?.v;
-    let total=Number(r.c[19]?.v)||0;
+    let nome = r.c[0]?.v;        // coluna A
+    let total = Number(r.c[11]?.v) || 0; // coluna L
 
     if(!nome) return;
-
-    let anteriorVal = mapaAnterior[nome] || 0;
 
     listaOriginal.push({
       nome,
       total,
-      evolucao: total - anteriorVal
+      evolucao: 0 // (mantido, mas sem comparação agora)
     });
   });
 
   aplicarFiltros();
 }
 
+/* FILTROS */
 function aplicarFiltros(){
   const busca = document.getElementById("busca").value.toLowerCase();
 
@@ -255,6 +237,7 @@ function aplicarFiltros(){
 
 document.getElementById("busca").addEventListener("input", aplicarFiltros);
 
+/* ORDENAÇÃO */
 function ordenar(){
   ordemDesc = !ordemDesc;
   ordenarRender();
@@ -266,6 +249,7 @@ function ordenarRender(){
   renderTabela();
 }
 
+/* TOP 3 */
 function renderTop3(){
   let top3=document.getElementById("top3");
   top3.innerHTML="";
@@ -283,6 +267,7 @@ function renderTop3(){
   });
 }
 
+/* TABELA */
 function renderTabela(){
   let tbody=document.getElementById("tbody");
   tbody.innerHTML="";
@@ -293,11 +278,7 @@ function renderTabela(){
     if(i<3) cor="verde";
     else if(t.total>=170) cor="amarelo";
 
-    let evo = t.evolucao > 0 
-      ? `<span class="seta-up">↑ ${t.evolucao}</span>`
-      : t.evolucao < 0 
-      ? `<span class="seta-down">↓ ${Math.abs(t.evolucao)}</span>`
-      : "-";
+    let evo = "-";
 
     tbody.innerHTML+=`
       <tr>
@@ -310,7 +291,7 @@ function renderTabela(){
   });
 }
 
-/* INICIALIZAÇÃO */
+/* INIT */
 carregarRanking();
 calcularDiasRestantes();
 
