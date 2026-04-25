@@ -93,6 +93,15 @@ tr:nth-child(even){ background:#fafafa; }
 
 .seta-up { color:#16a34a; font-weight:bold; }
 .seta-down { color:#dc2626; font-weight:bold; }
+
+/* 🔵 bolinha da cidade */
+.cidade-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+}
 </style>
 </head>
 
@@ -185,7 +194,7 @@ function calcularDiasRestantes(){
   el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias para o fechamento do mês`;
 }
 
-/* 🔥 NOVA BUSCA DE DADOS */
+/* 🔥 BUSCA */
 async function carregarMes(){
   const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${GID_FIXO}`;
 
@@ -196,7 +205,19 @@ async function carregarMes(){
   return json.table.rows;
 }
 
-/* CARREGAR RANKING */
+/* 🎨 COR POR CIDADE */
+function corCidade(cidade){
+  const cores = {
+    "Gramado": "#16a34a",
+    "Canela": "#2563eb",
+    "Nova Petrópolis": "#f59e0b",
+    "Dois Irmãos": "#dc2626",
+    "Herval": "#7c3aed"
+  };
+  return cores[cidade] || "#6b7280";
+}
+
+/* CARREGAR */
 async function carregarRanking(){
 
   document.getElementById("tituloMes").innerText =
@@ -209,22 +230,29 @@ async function carregarRanking(){
   dados.forEach((r,i)=>{
     if(i===0) return;
 
-    let nome = r.c[0]?.v;        // coluna A
-    let total = Number(r.c[11]?.v) || 0; // coluna L
+    let nomeCompleto = r.c[0]?.v;
+    let total = Number(r.c[11]?.v) || 0;
 
-    if(!nome) return;
+    if(!nomeCompleto) return;
+
+    // 🔥 extrai cidade
+    let cidadeMatch = nomeCompleto.match(/\((.*?)\)/);
+    let cidade = cidadeMatch ? cidadeMatch[1] : "Sem cidade";
+
+    let nome = nomeCompleto.replace(/\(.*?\)/, "").trim();
 
     listaOriginal.push({
       nome,
+      cidade,
       total,
-      evolucao: 0 // (mantido, mas sem comparação agora)
+      evolucao: 0
     });
   });
 
   aplicarFiltros();
 }
 
-/* FILTROS */
+/* FILTRO */
 function aplicarFiltros(){
   const busca = document.getElementById("busca").value.toLowerCase();
 
@@ -244,7 +272,17 @@ function ordenar(){
 }
 
 function ordenarRender(){
-  lista.sort((a,b)=> ordemDesc ? b.total-a.total : a.total-b.total);
+  lista.sort((a,b)=>{
+
+    // prioridade = pontuação
+    if(b.total !== a.total){
+      return ordemDesc ? b.total - a.total : a.total - b.total;
+    }
+
+    // desempate = cidade
+    return a.cidade.localeCompare(b.cidade);
+  });
+
   renderTop3();
   renderTabela();
 }
@@ -283,7 +321,11 @@ function renderTabela(){
     tbody.innerHTML+=`
       <tr>
         <td>${i+1}</td>
-        <td><span class="status ${cor}"></span>${t.nome}</td>
+        <td>
+          <span class="status ${cor}"></span>
+          <span class="cidade-dot" style="background:${corCidade(t.cidade)}"></span>
+          ${t.nome}
+        </td>
         <td>${t.total}</td>
         <td>${evo}</td>
       </tr>
