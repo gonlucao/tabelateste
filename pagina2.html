@@ -73,24 +73,37 @@ body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
 
 .card { background:white; padding:20px; border-radius:16px; }
 
-/* 🔥 filtro cidades */
+/* 🔥 FILTRO CIDADES AJUSTADO */
 .filtro-cidades{
   background:white;
-  padding:10px;
+  padding:12px;
   border-radius:12px;
   margin-bottom:15px;
+
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  justify-content:center;
+  gap:10px;
+
+  width:100%;
 }
 
 .filtro-cidades button{
-  padding:6px 12px;
+  flex:1 1 auto;
+  max-width:160px;
+
+  padding:8px 14px;
   border:none;
   border-radius:20px;
   background:#e5e7eb;
   cursor:pointer;
   font-weight:600;
+  text-align:center;
+  transition:0.2s;
+}
+
+.filtro-cidades button:hover{
+  transform:scale(1.05);
 }
 
 .filtro-cidades button.ativo{
@@ -156,7 +169,6 @@ tr:nth-child(even){ background:#fafafa; }
 
 <div class="top3" id="top3"></div>
 
-<!-- 🔥 BOX FILTRO -->
 <div class="filtro-cidades" id="filtroCidades"></div>
 
 <div class="card">
