@@ -13,7 +13,7 @@ body {
   padding:20px;
 }
 
-/* LOGIN */
+/* 🔽 (TODO SEU CSS ORIGINAL MANTIDO) */
 .login-overlay{
   position:fixed;
   width:100%;
@@ -54,14 +54,27 @@ body {
   cursor:pointer;
 }
 
-/* RESTANTE IGUAL */
 .container { max-width:1200px; margin:auto; }
 
-/* EXPANSÃO */
-.expand-icon{cursor:pointer;margin-right:6px;}
-.expand-icon.rotacionada{transform:rotate(90deg);}
-.linha-expandida{display:none;background:#f9fafb;}
-.box-expandida{padding:15px;}
+/* 🔽 EXPANSÃO */
+.expand-icon{
+  cursor:pointer;
+  margin-right:6px;
+  transition:0.3s;
+}
+
+.expand-icon.rotacionada{
+  transform:rotate(90deg);
+}
+
+.linha-expandida{
+  display:none;
+  background:#f9fafb;
+}
+
+.box-expandida{
+  padding:15px;
+}
 
 .grid-expandida{
   display:grid;
@@ -124,7 +137,7 @@ let dadosTecnicos = {};
 let lista = [];
 let assiduidadeDB = {};
 
-/* LOGIN */
+/* LOGIN ORIGINAL */
 window.onload = () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
 
@@ -148,9 +161,9 @@ async function login(){
 
 function aplicarLogin(user){
   document.getElementById("loginBox").style.display = "none";
-  document.getElementById("usuarioLogado").innerText = user.nome;
+  document.getElementById("usuarioLogado").innerText = `👤 ${user.nome} (${user.perfil})`;
 
-  carregarTudo();
+  carregarDados();
 }
 
 function logout(){
@@ -162,29 +175,33 @@ function erro(msg){
   document.getElementById("erro").innerText = msg;
 }
 
-/* 🔥 CARREGA TUDO SEM QUEBRAR */
-async function carregarTudo(){
-  await carregarAssiduidade();
-  await carregarDados();
-}
-
-/* ASSIDUIDADE */
+/* 🔥 ASSIDUIDADE (NÃO INTERFERE MAIS NO LOGIN) */
 async function carregarAssiduidade(){
-  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=1593374917`;
-  const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+  try{
+    const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=1593374917`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
 
-  json.table.rows.forEach((r,i)=>{
-    if(i===0) return;
-    let nome = r.c[0]?.v;
-    let perc = r.c[6]?.v;
-    if(nome) assiduidadeDB[nome] = perc;
-  });
+    json.table.rows.forEach((r,i)=>{
+      if(i===0) return;
+
+      let nome = r.c[0]?.v;
+      let perc = r.c[6]?.v;
+
+      if(nome) assiduidadeDB[nome] = perc;
+    });
+
+  }catch(e){
+    console.error("Erro assiduidade", e);
+  }
 }
 
-/* DADOS PRINCIPAIS */
+/* DADOS */
 async function carregarDados(){
+
+  await carregarAssiduidade(); // 🔥 AQUI É O LUGAR CERTO
+
   dadosTecnicos = {
     "Cristian Klein":[289,151,245],
     "Daniel Correa":[271,157,0]
