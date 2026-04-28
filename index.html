@@ -211,7 +211,7 @@ tr:hover { background:#f9fafb; }
   color:#555;
 }
 
-/* 🔽 NOVO - EXPANSÃO */
+/* EXPANSÃO */
 .expand-icon{
   cursor:pointer;
   margin-right:6px;
@@ -230,7 +230,33 @@ tr:hover { background:#f9fafb; }
 
 .box-expandida{
   padding:15px;
-  text-align:left;
+}
+
+/* 🔥 NOVO - GRID INTERNO */
+.grid-expandida{
+  display:grid;
+  grid-template-columns: repeat(4,1fr);
+  gap:10px;
+}
+
+.item-box{
+  background:white;
+  border-radius:10px;
+  padding:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  text-align:center;
+}
+
+.item-box strong{
+  display:block;
+  font-size:12px;
+  color:#666;
+  margin-bottom:4px;
+}
+
+.item-box span{
+  font-size:16px;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -313,10 +339,8 @@ tr:hover { background:#f9fafb; }
 
 <script>
 
-/* API */
 const API_URL = "https://script.google.com/macros/s/AKfycbydC82xbEs7KD4MZcwxyxXX6ahBJKWN9QYKqZ_DV_OZH96EsG1JyyomJNjd3GpwWe2N/exec";
 
-/* LOGIN */
 window.onload = () => {
   let logado = JSON.parse(localStorage.getItem("logado"));
   if(logado){ aplicarLogin(logado); } else { mostrarPagina(0); }
@@ -326,19 +350,15 @@ async function login(){
   let u = user.value;
   let p = pass.value;
 
-  try {
-    let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
-    let data = await res.json();
+  let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
+  let data = await res.json();
 
-    if(data.status){
-      let userData = {nome:data.nome, perfil:data.perfil};
-      localStorage.setItem("logado", JSON.stringify(userData));
-      aplicarLogin(userData);
-    }else{
-      erro("Login inválido");
-    }
-  } catch(e){
-    erro("Erro ao conectar API");
+  if(data.status){
+    let userData = {nome:data.nome, perfil:data.perfil};
+    localStorage.setItem("logado", JSON.stringify(userData));
+    aplicarLogin(userData);
+  }else{
+    erro("Login inválido");
   }
 }
 
@@ -375,7 +395,6 @@ function mostrarPagina(i){
   });
 }
 
-/* DASH */
 let dadosTecnicos = {};
 let lista = [];
 let direcao = 1;
@@ -491,10 +510,24 @@ function renderTabela(){
       <tr id="${id}" class="linha-expandida">
         <td colspan="6">
           <div class="box-expandida">
-            <strong>Assiduidade:</strong> -- <br>
-            <strong>Organização:</strong> -- <br>
-            <strong>Comportamento:</strong> -- <br>
-            <strong>Danos:</strong> -- 
+            <div class="grid-expandida">
+              <div class="item-box">
+                <strong>Assiduidade</strong>
+                <span>--</span>
+              </div>
+              <div class="item-box">
+                <strong>Organização</strong>
+                <span>--</span>
+              </div>
+              <div class="item-box">
+                <strong>Comportamento</strong>
+                <span>--</span>
+              </div>
+              <div class="item-box">
+                <strong>Danos</strong>
+                <span>--</span>
+              </div>
+            </div>
           </div>
         </td>
       </tr>
