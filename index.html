@@ -340,142 +340,34 @@ tr:hover { background:#f9fafb; }
 
 const API_URL = "https://script.google.com/macros/s/AKfycbydC82xbEs7KD4MZcwxyxXX6ahBJKWN9QYKqZ_DV_OZH96EsG1JyyomJNjd3GpwWe2N/exec";
 
-window.onload = () => {
-  let logado = JSON.parse(localStorage.getItem("logado"));
-  if(logado){ aplicarLogin(logado); } else { mostrarPagina(0); }
-};
+let assiduidadeDB = {};
 
-async function login(){
-  let u = user.value;
-  let p = pass.value;
-
-  let res = await fetch(`${API_URL}?user=${u}&pass=${p}`);
-  let data = await res.json();
-
-  if(data.status){
-    let userData = {nome:data.nome, perfil:data.perfil};
-    localStorage.setItem("logado", JSON.stringify(userData));
-    aplicarLogin(userData);
-  }else{
-    erro("Login inválido");
-  }
-}
-
-function aplicarLogin(user){
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("usuarioLogado").innerText = `👤 ${user.nome} (${user.perfil})`;
-
-  if(user.perfil === "supervisor"){
-    mostrarPagina(0);
-    carregarDados();
-  } else {
-    window.location.href = "pagina2.html";
-  }
-}
-
-function logout(){
-  localStorage.removeItem("logado");
-  location.reload();
-}
-
-function erro(msg){
-  document.getElementById("erro").innerText = msg;
-}
-
-function trocarPagina(i){ mostrarPagina(i); }
-
-function mostrarPagina(i){
-  document.querySelectorAll(".pagina").forEach((p,index)=>{
-    p.classList.toggle("ativa", index===i);
-  });
-
-  document.querySelectorAll("#menu button").forEach((b,index)=>{
-    b.classList.toggle("ativo", index===i);
-  });
-}
-
-let dadosTecnicos = {};
-let lista = [];
-let direcao = 1;
-
-const abas = ["1836732217","576248296","1758926410"];
-
-async function carregarMes(gid){
-  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${gid}`;
+async function carregarAssiduidade(){
+  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=1593374917`;
   const res = await fetch(url);
   const text = await res.text();
   const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
-  return json.table.rows;
-}
 
-async function carregarDados(){
-  dadosTecnicos = {};
-  const resultados = await Promise.all(abas.map(gid => carregarMes(gid)));
+  json.table.rows.forEach((r,index)=>{
+    if(index===0) return;
 
-  resultados.forEach((rows, i) => {
-    rows.forEach((r,index)=>{
-      if(index===0) return;
+    let nome = r.c[0]?.v;
+    let perc = r.c[6]?.v;
 
-      let nome = r.c[0]?.v;
-      if(!nome) return;
-
-      let total = Number(r.c[19]?.v)||0;
-
-      if(!dadosTecnicos[nome]) dadosTecnicos[nome]=[0,0,0];
-      dadosTecnicos[nome][i]=total;
-    });
+    if(nome) assiduidadeDB[nome] = perc;
   });
-
-  montarLista();
-  render();
 }
 
-function media(a){ return a.reduce((x,y)=>x+y,0)/a.length; }
-function metas(a){ return a.filter(v=>v>=170).length; }
+window.onload = async () => {
+  let logado = JSON.parse(localStorage.getItem("logado"));
 
-function montarLista(){
-  lista = Object.keys(dadosTecnicos).map(n=>{
-    let v = dadosTecnicos[n];
-    return {n,v,m:media(v),k:metas(v)};
-  }).filter(x=>x.m>=50);
-}
-
-function render(){
-  totalTec.innerText = lista.length;
-  mediaGeral.innerText =
-    (lista.reduce((s,x)=>s+x.m,0)/lista.length).toFixed(1);
-
-  meta3.innerText =
-    Math.round((lista.filter(x=>x.k===3).length/lista.length)*100)+"%";
-
-  meta2.innerText =
-    Math.round((lista.filter(x=>x.k===2).length/lista.length)*100)+"%";
-
-  meta1.innerText =
-    Math.round((lista.filter(x=>x.k===1).length/lista.length)*100)+"%";
-
-  renderTabela();
-  renderTop3();
-}
-
-function renderTop3(){
-  let top3=document.getElementById("top3");
-  top3.innerHTML="";
-  const medalhas=["🥇","🥈","🥉"];
-
-  [...lista]
-    .sort((a,b)=>b.m-a.m)
-    .slice(0,3)
-    .forEach((t,i)=>{
-      top3.innerHTML+=`
-        <div class="top3-card">
-          <div style="font-size:24px">${medalhas[i]}</div>
-          <strong>${t.n}</strong>
-          <div>${t.m.toFixed(1)}</div>
-        </div>
-      `;
-    });
-}
+  if(logado){
+    await carregarAssiduidade();
+    aplicarLogin(logado);
+  } else {
+    mostrarPagina(0);
+  }
+};
 
 function renderTabela(){
   let tbody=document.getElementById("tbody");
@@ -483,6 +375,7 @@ function renderTabela(){
 
   lista.forEach((o,index)=>{
     let id = "expand_"+index;
+    let ass = assiduidadeDB[o.n] || "--";
 
     let linha=`
     <tr>
@@ -516,7 +409,7 @@ function renderTabela(){
               </div>
               <div class="item-box">
                 <strong>Assiduidade</strong>
-                <span>--</span>
+                <span>${ass || "--"}%</span>
               </div>
               <div class="item-box">
                 <strong>Danos</strong>
@@ -534,30 +427,6 @@ function renderTabela(){
 
     tbody.innerHTML+=linha;
   });
-}
-
-function toggleExpand(id, el){
-  const linha = document.getElementById(id);
-
-  if(linha.style.display === "table-row"){
-    linha.style.display = "none";
-    el.classList.remove("rotacionada");
-  }else{
-    linha.style.display = "table-row";
-    el.classList.add("rotacionada");
-  }
-}
-
-function ordenar(col){
-  direcao = direcao * -1;
-
-  lista.sort((a,b)=>{
-    if(col <= 2) return direcao * (a.v[col] - b.v[col]);
-    if(col === 3) return direcao * (a.m - b.m);
-    if(col === 4) return direcao * (a.k - b.k);
-  });
-
-  renderTabela();
 }
 
 </script>
