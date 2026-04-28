@@ -232,7 +232,6 @@ tr:hover { background:#f9fafb; }
   padding:15px;
 }
 
-/* 🔥 NOVO - GRID INTERNO */
 .grid-expandida{
   display:grid;
   grid-template-columns: repeat(4,1fr);
@@ -512,19 +511,19 @@ function renderTabela(){
           <div class="box-expandida">
             <div class="grid-expandida">
               <div class="item-box">
+                <strong>Meta</strong>
+                <span>${o.m.toFixed(1)}</span>
+              </div>
+              <div class="item-box">
                 <strong>Assiduidade</strong>
                 <span>--</span>
               </div>
               <div class="item-box">
-                <strong>Organização</strong>
+                <strong>Danos</strong>
                 <span>--</span>
               </div>
               <div class="item-box">
                 <strong>Comportamento</strong>
-                <span>--</span>
-              </div>
-              <div class="item-box">
-                <strong>Danos</strong>
                 <span>--</span>
               </div>
             </div>
