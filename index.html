@@ -12,12 +12,12 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
     background:#eef2f7;
-    padding:25px;
+    padding:20px;
 }
 
 /* ==========================
@@ -34,8 +34,8 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    flex-wrap:wrap;
     gap:20px;
+    flex-wrap:wrap;
 
     box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
@@ -51,14 +51,14 @@ body{
     height:75px;
     background:white;
     color:#d90429;
-    border-radius:18px;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
+    border-radius:18px;
+    font-weight:bold;
     font-size:24px;
-    font-weight:700;
 }
 
 .hero h1{
@@ -67,13 +67,7 @@ body{
 }
 
 .hero p{
-    font-size:15px;
     opacity:.9;
-}
-
-.hero-right{
-    display:flex;
-    align-items:center;
 }
 
 .hero-info{
@@ -82,21 +76,84 @@ body{
 
     padding:20px 35px;
     border-radius:18px;
-
     text-align:center;
-    min-width:180px;
 }
 
 .hero-info span{
     display:block;
     font-size:14px;
-    opacity:.9;
-    margin-bottom:8px;
+    margin-bottom:5px;
 }
 
 .hero-info strong{
     font-size:42px;
+}
+
+/* ==========================
+   TOP 3
+========================== */
+
+.section-title{
+    font-size:22px;
     font-weight:700;
+    margin-bottom:15px;
+    color:#1f2937;
+}
+
+.top3-container{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:20px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.top3-card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    min-width:260px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.top3-card.ouro{
+    min-height:220px;
+    border-top:6px solid #FFD700;
+}
+
+.top3-card.prata{
+    min-height:190px;
+    border-top:6px solid #C0C0C0;
+}
+
+.top3-card.bronze{
+    min-height:190px;
+    border-top:6px solid #CD7F32;
+}
+
+.medal{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.nome{
+    font-size:20px;
+    font-weight:700;
+}
+
+.cidade{
+    color:#666;
+    margin-top:5px;
+}
+
+.pontos{
+    font-size:42px;
+    font-weight:700;
+    margin-top:15px;
+    color:#d90429;
 }
 
 /* ==========================
@@ -145,7 +202,6 @@ body{
 .meta-box{
     width:110px;
     height:110px;
-
     border-radius:15px;
 
     display:flex;
@@ -178,66 +234,65 @@ body{
 }
 
 /* ==========================
-   TOP 3
-========================== */
-
-.podium{
-    margin-top:25px;
-
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-}
-
-.podium-card{
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    text-align:center;
-
-    box-shadow:0 3px 10px rgba(0,0,0,.08);
-}
-
-.medalha{
-    font-size:30px;
-    margin-bottom:10px;
-}
-
-.nome{
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-.pontos{
-    font-size:34px;
-    font-weight:700;
-}
-
-/* ==========================
-   RESPONSIVO
+   MOBILE
 ========================== */
 
 @media(max-width:768px){
 
+body{
+    padding:15px;
+}
+
 .hero{
-    padding:25px;
+    flex-direction:column;
+    align-items:flex-start;
+    padding:20px;
 }
 
 .hero h1{
-    font-size:26px;
-}
-
-.hero-right{
-    width:100%;
+    font-size:24px;
 }
 
 .hero-info{
     width:100%;
 }
 
+.hero-info strong{
+    font-size:34px;
+}
+
+.cards{
+    grid-template-columns:1fr;
+}
+
+.top3-container{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.top3-card{
+    min-width:100%;
+}
+
+.card{
+    padding:25px;
+}
+
 .card-value{
     font-size:42px;
+}
+
+.meta-box{
+    width:90px;
+    height:90px;
+}
+
+.percentual{
+    font-size:24px;
+}
+
+.meta{
+    font-size:18px;
 }
 
 }
@@ -258,42 +313,54 @@ body{
 
         <div>
             <h1>Indicadores Equipes Externas</h1>
-            <p>
-                Acompanhamento de desempenho, produtividade e metas das equipes externas.
-            </p>
+            <p>Acompanhamento de desempenho, produtividade e metas das equipes.</p>
         </div>
 
     </div>
 
-    <div class="hero-right">
-
-        <div class="hero-info">
-            <span>Total de Técnicos</span>
-            <strong>61</strong>
-        </div>
-
+    <div class="hero-info">
+        <span>Total de Técnicos</span>
+        <strong>61</strong>
     </div>
 
 </div>
 
-<!-- CARDS PRINCIPAIS -->
+<!-- TOP 3 -->
+
+<div class="section-title">
+🏆 Ranking Geral - Top 3
+</div>
+
+<div class="top3-container">
+
+    <div class="top3-card prata">
+        <div class="medal">🥈</div>
+        <div class="nome">Cristian Klein</div>
+        <div class="cidade">Nova Petrópolis</div>
+        <div class="pontos">289</div>
+    </div>
+
+    <div class="top3-card ouro">
+        <div class="medal">🥇</div>
+        <div class="nome">Lucas Rinker</div>
+        <div class="cidade">OFF</div>
+        <div class="pontos">294</div>
+    </div>
+
+    <div class="top3-card bronze">
+        <div class="medal">🥉</div>
+        <div class="nome">Daniel Correa</div>
+        <div class="cidade">Gramado</div>
+        <div class="pontos">271</div>
+    </div>
+
+</div>
+
+<!-- INDICADORES -->
 
 <div class="cards">
 
     <div class="card">
-
-        <div class="card-title">
-            Total Técnicos
-        </div>
-
-        <div class="card-value">
-            61
-        </div>
-
-    </div>
-
-    <div class="card">
-
         <div class="card-title">
             Média Geral
         </div>
@@ -301,7 +368,6 @@ body{
         <div class="card-value">
             166.5
         </div>
-
     </div>
 
     <div class="card">
@@ -329,30 +395,6 @@ body{
 
         </div>
 
-    </div>
-
-</div>
-
-<!-- TOP 3 -->
-
-<div class="podium">
-
-    <div class="podium-card">
-        <div class="medalha">🥇</div>
-        <div class="nome">Lucas Rinker (OFF)</div>
-        <div class="pontos">294</div>
-    </div>
-
-    <div class="podium-card">
-        <div class="medalha">🥈</div>
-        <div class="nome">Cristian Klein (Nova Petrópolis)</div>
-        <div class="pontos">289</div>
-    </div>
-
-    <div class="podium-card">
-        <div class="medalha">🥉</div>
-        <div class="nome">Daniel Correa (Gramado)</div>
-        <div class="pontos">271</div>
     </div>
 
 </div>
