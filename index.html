@@ -1,63 +1,74 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Página</title>
+<div class="container">
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-}
+    <div class="topbar">
+        <div class="topbar-content">
+            <img src="logo.png" class="logo">
+            <span>Monitoramento - Metas equipes externa</span>
+        </div>
+    </div>
 
-header{
-    background:#0066cc;
-    color:white;
-    padding:20px;
-    text-align:center;
-}
+    <div class="cards">
 
-main{
-    max-width:1000px;
-    margin:20px auto;
-    padding:20px;
-    background:white;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
+        <div class="card-kpi">
+            <h3>Total Técnicos</h3>
+            <span>40</span>
+        </div>
 
-button{
-    background:#0066cc;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:5px;
-    cursor:pointer;
-}
-</style>
-</head>
-<body>
+        <div class="card-kpi">
+            <h3>Média Geral</h3>
+            <span>182</span>
+        </div>
 
-<header>
-    <h1>Bem-vindo</h1>
-</header>
+        <div class="card-kpi">
+            <h3>Consistência de Metas</h3>
+        </div>
 
-<main>
-    <h2>Minha Página HTML</h2>
-    <p>Página criada em HTML, CSS e JavaScript.</p>
+    </div>
 
-    <button onclick="mostrarMensagem()">
-        Clique Aqui
-    </button>
-</main>
+    <div class="top3">
 
-<script>
-function mostrarMensagem(){
-    alert("Olá, Lucas!");
-}
-</script>
+        <div class="top3-card">
+            <h3>🥇</h3>
+            <strong>Técnico 1</strong>
+        </div>
 
-</body>
-</html>
+        <div class="top3-card">
+            <h3>🥈</h3>
+            <strong>Técnico 2</strong>
+        </div>
+
+        <div class="top3-card">
+            <h3>🥉</h3>
+            <strong>Técnico 3</strong>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Técnico</th>
+                    <th>Jan</th>
+                    <th>Fev</th>
+                    <th>Mar</th>
+                    <th>Média</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Lucas</td>
+                    <td>180</td>
+                    <td>195</td>
+                    <td>175</td>
+                    <td>183</td>
+                    <td>🟢🟢🟢</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
