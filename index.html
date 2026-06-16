@@ -12,7 +12,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body{
@@ -21,11 +21,11 @@ body{
 }
 
 /* ==========================
-   CABEÇALHO PRINCIPAL
+   CABEÇALHO
 ========================== */
 
 .hero{
-    background:linear-gradient(135deg,#d60f17,#ef232b);
+    background:linear-gradient(135deg,#d90429,#ef233c);
     color:white;
     border-radius:20px;
     padding:30px 40px;
@@ -37,7 +37,7 @@ body{
     flex-wrap:wrap;
     gap:20px;
 
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
 
 .hero-left{
@@ -50,15 +50,15 @@ body{
     width:75px;
     height:75px;
     background:white;
-    color:#d60f17;
+    color:#d90429;
     border-radius:18px;
 
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
 
-    font-size:34px;
-    font-weight:bold;
+    font-size:24px;
+    font-weight:700;
 }
 
 .hero h1{
@@ -68,37 +68,39 @@ body{
 
 .hero p{
     font-size:15px;
-    opacity:0.9;
+    opacity:.9;
 }
 
 .hero-right{
     display:flex;
-    gap:15px;
-    flex-wrap:wrap;
+    align-items:center;
 }
 
 .hero-info{
     background:rgba(255,255,255,.15);
     backdrop-filter:blur(10px);
-    padding:15px 25px;
-    border-radius:15px;
+
+    padding:20px 35px;
+    border-radius:18px;
+
     text-align:center;
-    min-width:140px;
+    min-width:180px;
 }
 
 .hero-info span{
     display:block;
-    font-size:13px;
-    opacity:0.9;
-    margin-bottom:5px;
+    font-size:14px;
+    opacity:.9;
+    margin-bottom:8px;
 }
 
 .hero-info strong{
-    font-size:30px;
+    font-size:42px;
+    font-weight:700;
 }
 
 /* ==========================
-   CARDS PRINCIPAIS
+   CARDS
 ========================== */
 
 .cards{
@@ -111,21 +113,21 @@ body{
     background:white;
     border-radius:18px;
     padding:35px;
-    min-height:210px;
+    min-height:220px;
 
     box-shadow:0 3px 10px rgba(0,0,0,.08);
 }
 
 .card-title{
     text-align:center;
-    font-size:18px;
+    font-size:20px;
     font-weight:700;
     margin-bottom:35px;
 }
 
 .card-value{
     text-align:center;
-    font-size:56px;
+    font-size:58px;
     font-weight:700;
 }
 
@@ -152,7 +154,7 @@ body{
     align-items:center;
 
     color:white;
-    font-weight:bold;
+    font-weight:700;
 }
 
 .verde{
@@ -164,7 +166,7 @@ body{
 }
 
 .vermelho{
-    background:#ef2222;
+    background:#ef4444;
 }
 
 .percentual{
@@ -191,7 +193,6 @@ body{
     background:white;
     border-radius:18px;
     padding:20px;
-
     text-align:center;
 
     box-shadow:0 3px 10px rgba(0,0,0,.08);
@@ -203,7 +204,7 @@ body{
 }
 
 .nome{
-    font-size:16px;
+    font-size:18px;
     font-weight:700;
     margin-bottom:8px;
 }
@@ -232,7 +233,7 @@ body{
 }
 
 .hero-info{
-    flex:1;
+    width:100%;
 }
 
 .card-value{
@@ -258,7 +259,7 @@ body{
         <div>
             <h1>Indicadores Equipes Externas</h1>
             <p>
-                Acompanhamento de desempenho, metas e produtividade das equipes
+                Acompanhamento de desempenho, produtividade e metas das equipes externas.
             </p>
         </div>
 
@@ -267,25 +268,15 @@ body{
     <div class="hero-right">
 
         <div class="hero-info">
-            <span>Total Equipes</span>
-            <strong>14</strong>
-        </div>
-
-        <div class="hero-info">
-            <span>Técnicos</span>
+            <span>Total de Técnicos</span>
             <strong>61</strong>
-        </div>
-
-        <div class="hero-info">
-            <span>Média Geral</span>
-            <strong>166.5</strong>
         </div>
 
     </div>
 
 </div>
 
-<!-- CARDS -->
+<!-- CARDS PRINCIPAIS -->
 
 <div class="cards">
 
