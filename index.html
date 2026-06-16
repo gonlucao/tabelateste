@@ -1,11 +1,258 @@
-<!-- CABEÇALHO PRINCIPAL -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Indicadores Equipes Externas</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#eef2f7;
+    padding:25px;
+}
+
+/* ==========================
+   CABEÇALHO PRINCIPAL
+========================== */
+
+.hero{
+    background:linear-gradient(135deg,#d60f17,#ef232b);
+    color:white;
+    border-radius:20px;
+    padding:30px 40px;
+    margin-bottom:25px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+
+.hero-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    width:75px;
+    height:75px;
+    background:white;
+    color:#d60f17;
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:34px;
+    font-weight:bold;
+}
+
+.hero h1{
+    font-size:34px;
+    margin-bottom:5px;
+}
+
+.hero p{
+    font-size:15px;
+    opacity:0.9;
+}
+
+.hero-right{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.hero-info{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+    padding:15px 25px;
+    border-radius:15px;
+    text-align:center;
+    min-width:140px;
+}
+
+.hero-info span{
+    display:block;
+    font-size:13px;
+    opacity:0.9;
+    margin-bottom:5px;
+}
+
+.hero-info strong{
+    font-size:30px;
+}
+
+/* ==========================
+   CARDS PRINCIPAIS
+========================== */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:35px;
+    min-height:210px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.card-title{
+    text-align:center;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:35px;
+}
+
+.card-value{
+    text-align:center;
+    font-size:56px;
+    font-weight:700;
+}
+
+/* ==========================
+   CONSISTÊNCIA
+========================== */
+
+.consistencia{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.meta-box{
+    width:110px;
+    height:110px;
+
+    border-radius:15px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+    font-weight:bold;
+}
+
+.verde{
+    background:#16a34a;
+}
+
+.amarelo{
+    background:#f59e0b;
+}
+
+.vermelho{
+    background:#ef2222;
+}
+
+.percentual{
+    font-size:32px;
+}
+
+.meta{
+    font-size:24px;
+}
+
+/* ==========================
+   TOP 3
+========================== */
+
+.podium{
+    margin-top:25px;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.podium-card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+
+    text-align:center;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.medalha{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.nome{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.pontos{
+    font-size:34px;
+    font-weight:700;
+}
+
+/* ==========================
+   RESPONSIVO
+========================== */
+
+@media(max-width:768px){
+
+.hero{
+    padding:25px;
+}
+
+.hero h1{
+    font-size:26px;
+}
+
+.hero-right{
+    width:100%;
+}
+
+.hero-info{
+    flex:1;
+}
+
+.card-value{
+    font-size:42px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<!-- CABEÇALHO -->
 
 <div class="hero">
 
     <div class="hero-left">
 
         <div class="logo">
-            📊
+            RBT
         </div>
 
         <div>
@@ -37,3 +284,87 @@
     </div>
 
 </div>
+
+<!-- CARDS -->
+
+<div class="cards">
+
+    <div class="card">
+
+        <div class="card-title">
+            Total Técnicos
+        </div>
+
+        <div class="card-value">
+            61
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            Média Geral
+        </div>
+
+        <div class="card-value">
+            166.5
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            Consistência de Metas
+        </div>
+
+        <div class="consistencia">
+
+            <div class="meta-box verde">
+                <div class="percentual">54%</div>
+                <div class="meta">3/3</div>
+            </div>
+
+            <div class="meta-box amarelo">
+                <div class="percentual">0%</div>
+                <div class="meta">2/3</div>
+            </div>
+
+            <div class="meta-box vermelho">
+                <div class="percentual">0%</div>
+                <div class="meta">1/3</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOP 3 -->
+
+<div class="podium">
+
+    <div class="podium-card">
+        <div class="medalha">🥇</div>
+        <div class="nome">Lucas Rinker (OFF)</div>
+        <div class="pontos">294</div>
+    </div>
+
+    <div class="podium-card">
+        <div class="medalha">🥈</div>
+        <div class="nome">Cristian Klein (Nova Petrópolis)</div>
+        <div class="pontos">289</div>
+    </div>
+
+    <div class="podium-card">
+        <div class="medalha">🥉</div>
+        <div class="nome">Daniel Correa (Gramado)</div>
+        <div class="pontos">271</div>
+    </div>
+
+</div>
+
+</body>
+</html>
