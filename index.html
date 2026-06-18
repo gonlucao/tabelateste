@@ -523,6 +523,7 @@ thead th:first-child{
         <thead>
     <tr id="cabecalho-meses">
         <th>Técnico</th>
+        <th>Cidade</th>
         <th>Mês 1</th>
         <th>Mês 2</th>
         <th>Mês 3</th>
@@ -575,6 +576,16 @@ const meses = [
 
 function limparNome(nome){
     return nome.replace(/\(.*?\)/g,'').trim();
+}
+    function extrairCidade(nome){
+
+    const match =
+    nome.match(/\((.*?)\)/);
+
+    return match
+        ? match[1]
+        : "-";
+
 }
 
 async function carregarTecnicosPermitidos(){
@@ -652,14 +663,15 @@ if(!permitidos.has(tecnico))
 const pontuacao =
 Number(colunas[19]) || 0;
 
-                if(!tecnicos[tecnico]){
+            if(!tecnicos[tecnico]){
 
-                    tecnicos[tecnico] = {
-                        total:0,
-                        meses:{}
-                    };
+    tecnicos[tecnico] = {
+        total:0,
+        cidade:extrairCidade(colunas[0]),
+        meses:{}
+    };
 
-                }
+}
 
                 tecnicos[tecnico].meses[mes.nome] =
                 pontuacao;
@@ -739,6 +751,7 @@ for(let i = 2; i >= 0; i--){
 
 document.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
+    <th>Cidade</th>
     <th>${mesesExibidos[0]}</th>
     <th>${mesesExibidos[1]}</th>
     <th>${mesesExibidos[2]}</th>
@@ -755,6 +768,7 @@ document.getElementById("cabecalho-meses").innerHTML = `
 
         const nome = item[0];
         const dados = item[1];
+        const cidade = dados.cidade || "-";
 
         let somaMeses = 0;
         let qtdMeses = 0;
@@ -806,7 +820,13 @@ const status3 = valores
 .join("");
 
 tr.innerHTML = `
-<td style="padding-left:20px;">${nome}</td>
+<td style="padding-left:20px;">
+    ${nome}
+</td>
+
+<td>
+    ${cidade}
+</td>
 
 <td class="coluna-mes1">
     ${m1}
