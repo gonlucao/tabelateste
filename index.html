@@ -247,27 +247,6 @@ body{
 /* =========================
    TABELA
 ========================= */
-   
-.filtro-cidade{
-    margin-left:6px;
-
-    background:transparent;
-    border:none;
-
-    color:white;
-    font-weight:700;
-
-    cursor:pointer;
-
-    outline:none;
-}
-
-.filtro-cidade option{
-    color:black;
-}
-
-
-
 
 .table-card{
     background:white;
@@ -536,7 +515,6 @@ thead th:first-child{
 </div>
 
 <!-- TABELA -->
-    <!-- FILTROS -->
 
 <div class="table-card">
 
@@ -726,7 +704,6 @@ Number(colunas[19]) || 0;
 }
 
 function montarDashboard(tecnicos){
-    const cidades = new Set();
 
     const ranking =
     Object.entries(tecnicos)
@@ -784,35 +761,21 @@ for(let i = 2; i >= 0; i--){
 
 }
 
-ddocument.getElementById("cabecalho-meses").innerHTML = `
+document.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
-
-    <th>
-        Cidade
-        <select
-            id="filtroCidade"
-            onchange="aplicarFiltroCidade()"
-            class="filtro-cidade">
-            <option value="Todas">Todas</option>
-        </select>
-    </th>
-
+    <th>Cidade</th>
     <th onclick="ordenarTabela('m1')" class="coluna-ordenavel">
-        ${mesesExibidos[0]} ⇅
-    </th>
-
+    ${mesesExibidos[0]} ⇅
+</th>
     <th onclick="ordenarTabela('m2')" class="coluna-ordenavel">
-        ${mesesExibidos[1]} ⇅
-    </th>
-
+    ${mesesExibidos[1]} ⇅
+</th>
     <th onclick="ordenarTabela('m3')" class="coluna-ordenavel">
-        ${mesesExibidos[2]} ⇅
-    </th>
-
+    ${mesesExibidos[2]} ⇅
+</th>
     <th onclick="ordenarTabela('media')" class="coluna-ordenavel">
-        Média ⇅
-    </th>
-
+    Média ⇅
+</th>
     <th>Status</th>
 `;
     
@@ -820,32 +783,12 @@ ddocument.getElementById("cabecalho-meses").innerHTML = `
     document.getElementById("tabela-tecnicos");
 
     tbody.innerHTML = "";
-const selectCidade =
-document.getElementById("filtroCidade");
 
-if(selectCidade.options.length === 1){
-
-    [...cidades]
-    .sort()
-    .forEach(cidade=>{
-
-        const option =
-        document.createElement("option");
-
-        option.value = cidade;
-        option.textContent = cidade;
-
-        selectCidade.appendChild(option);
-
-    });
-
-}
     ranking.forEach(item=>{
 
         const nome = item[0];
         const dados = item[1];
         const cidade = dados.cidade || "-";
-        cidades.add(cidade);
 
         let somaMeses = 0;
         let qtdMeses = 0;
@@ -999,31 +942,7 @@ function ordenarTabela(coluna){
     });
 
 }
-    function aplicarFiltroCidade(){
-
-    const cidadeSelecionada =
-    document.getElementById("filtroCidade").value;
-
-    const linhas =
-    document.querySelectorAll("#tabela-tecnicos tr");
-
-    linhas.forEach(linha=>{
-
-        const cidade =
-        linha.cells[1].innerText.trim();
-
-        if(
-            cidadeSelecionada === "Todas" ||
-            cidade === cidadeSelecionada
-        ){
-            linha.style.display = "";
-        }else{
-            linha.style.display = "none";
-        }
-
-    });
-
-}
+    
 carregarDados();
 
 </script>
