@@ -351,6 +351,10 @@ tbody tr:hover{
 <!--        INÍCIO DA PARTE 02            -->
 <!-- ===================================== -->
 
+<!-- ===================================== -->
+<!--        INÍCIO DA PARTE 02 V2         -->
+<!-- ===================================== -->
+
 <body>
 
 <!-- CABEÇALHO -->
@@ -374,7 +378,7 @@ tbody tr:hover{
 
     <div class="hero-info">
         <div>Total de Técnicos</div>
-        <strong>61</strong>
+        <strong id="total-tecnicos">0</strong>
     </div>
 
 </div>
@@ -391,20 +395,20 @@ tbody tr:hover{
 
         <div class="top3-item prata">
             <div class="medal">🥈</div>
-            <div class="nome">Cristian Klein</div>
-            <div class="pontos">289</div>
+            <div class="nome" id="top2-nome">Carregando...</div>
+            <div class="pontos" id="top2-pontos">0</div>
         </div>
 
         <div class="top3-item ouro">
             <div class="medal">🥇</div>
-            <div class="nome">Lucas Rinker</div>
-            <div class="pontos">294</div>
+            <div class="nome" id="top1-nome">Carregando...</div>
+            <div class="pontos" id="top1-pontos">0</div>
         </div>
 
         <div class="top3-item bronze">
             <div class="medal">🥉</div>
-            <div class="nome">Daniel Correa</div>
-            <div class="pontos">271</div>
+            <div class="nome" id="top3-nome">Carregando...</div>
+            <div class="pontos" id="top3-pontos">0</div>
         </div>
 
     </div>
@@ -417,12 +421,12 @@ tbody tr:hover{
 
     <div class="card">
         <div class="card-title">Média Geral</div>
-        <div class="card-value">166.5</div>
+        <div class="card-value" id="media-geral">0</div>
     </div>
 
     <div class="card">
         <div class="card-title">Meta Atingida</div>
-        <div class="card-value">87%</div>
+        <div class="card-value" id="meta-geral">0%</div>
     </div>
 
     <div class="card">
@@ -434,17 +438,17 @@ tbody tr:hover{
         <div class="consistencia">
 
             <div class="meta-box verde">
-                <div>54%</div>
+                <div id="meta-3">0%</div>
                 <div>3/3</div>
             </div>
 
             <div class="meta-box amarelo">
-                <div>22%</div>
+                <div id="meta-2">0%</div>
                 <div>2/3</div>
             </div>
 
             <div class="meta-box vermelho">
-                <div>24%</div>
+                <div id="meta-1">0%</div>
                 <div>1/3</div>
             </div>
 
@@ -490,62 +494,7 @@ tbody tr:hover{
                 </tr>
             </thead>
 
-            <tbody>
-
-                <tr>
-                    <td>Lucas Rinker</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td>294</td>
-                    <td class="media">294</td>
-                    <td>🟢🟢🟢🟢🟢🟢</td>
-                </tr>
-
-                <tr>
-                    <td>Cristian Klein</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td>289</td>
-                    <td class="media">289</td>
-                    <td>🟢🟢🟢🟢🟢🟢</td>
-                </tr>
-
-                <tr>
-                    <td>Daniel Correa</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td>271</td>
-                    <td class="media">271</td>
-                    <td>🟢🟢🟢🟢🟢🟢</td>
-                </tr>
-
+            <tbody id="tabela-tecnicos">
             </tbody>
 
         </table>
@@ -553,11 +502,193 @@ tbody tr:hover{
     </div>
 
 </div>
+<script>
+
+const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
+
+const meses = [
+    {nome:"Jan", gid:"1828169539"},
+    {nome:"Fev", gid:"221336973"},
+    {nome:"Mar", gid:"899074991"},
+    {nome:"Abr", gid:"1915881981"},
+    {nome:"Mai", gid:"82997899"},
+    {nome:"Jun", gid:"171462989"},
+    {nome:"Jul", gid:"87076333"},
+    {nome:"Ago", gid:"529473088"},
+    {nome:"Set", gid:"136005325"},
+    {nome:"Out", gid:"966835053"},
+    {nome:"Nov", gid:"719858964"},
+    {nome:"Dez", gid:"889205160"}
+];
+
+function limparNome(nome){
+    return nome.replace(/\(.*?\)/g,'').trim();
+}
+
+async function carregarDados(){
+
+    const tecnicos = {};
+
+    for(const mes of meses){
+
+        try{
+
+            const url =
+            `https://docs.google.com/spreadsheets/d/${PLANILHA_ID}/export?format=csv&gid=${mes.gid}`;
+
+            const resposta = await fetch(url);
+
+            const csv = await resposta.text();
+
+            const linhas = csv.split("\n");
+
+            for(let i=1;i<linhas.length;i++){
+
+                const colunas = linhas[i].split(",");
+
+                if(!colunas[0]) continue;
+
+                const tecnico =
+                limparNome(colunas[0]);
+
+                const pontuacao =
+                Number(colunas[19]) || 0;
+
+                if(!tecnicos[tecnico]){
+
+                    tecnicos[tecnico] = {
+                        total:0,
+                        meses:{}
+                    };
+
+                }
+
+                tecnicos[tecnico].meses[mes.nome] =
+                pontuacao;
+
+                tecnicos[tecnico].total +=
+                pontuacao;
+
+            }
+
+        }catch(e){
+            console.log(e);
+        }
+
+    }
+
+    montarDashboard(tecnicos);
+
+}
+
+function montarDashboard(tecnicos){
+
+    const ranking =
+    Object.entries(tecnicos)
+    .sort((a,b)=>b[1].total-a[1].total);
+
+    document.getElementById("total-tecnicos")
+    .textContent = ranking.length;
+
+    if(ranking[0]){
+        document.getElementById("top1-nome").textContent = ranking[0][0];
+        document.getElementById("top1-pontos").textContent = Math.round(ranking[0][1].total);
+    }
+
+    if(ranking[1]){
+        document.getElementById("top2-nome").textContent = ranking[1][0];
+        document.getElementById("top2-pontos").textContent = Math.round(ranking[1][1].total);
+    }
+
+    if(ranking[2]){
+        document.getElementById("top3-nome").textContent = ranking[2][0];
+        document.getElementById("top3-pontos").textContent = Math.round(ranking[2][1].total);
+    }
+
+    let soma = 0;
+
+    ranking.forEach(r=>{
+        soma += r[1].total;
+    });
+
+    const media =
+    ranking.length
+    ? soma / ranking.length
+    : 0;
+
+    document.getElementById("media-geral")
+    .textContent = media.toFixed(1);
+
+    const tbody =
+    document.getElementById("tabela-tecnicos");
+
+    tbody.innerHTML = "";
+
+    ranking.forEach(item=>{
+
+        const nome = item[0];
+        const dados = item[1];
+
+        let somaMeses = 0;
+        let qtdMeses = 0;
+        let status = "";
+
+        meses.forEach(mes=>{
+
+            const valor =
+            dados.meses[mes.nome] || 0;
+
+            if(valor > 0){
+                somaMeses += valor;
+                qtdMeses++;
+            }
+
+            if(valor >= 170){
+                status += "🟢";
+            }
+
+        });
+
+        const media =
+        qtdMeses
+        ? somaMeses/qtdMeses
+        : 0;
+
+        const tr =
+        document.createElement("tr");
+
+        tr.innerHTML = `
+        <td>${nome}</td>
+        <td>${dados.meses.Jan||''}</td>
+        <td>${dados.meses.Fev||''}</td>
+        <td>${dados.meses.Mar||''}</td>
+        <td>${dados.meses.Abr||''}</td>
+        <td>${dados.meses.Mai||''}</td>
+        <td>${dados.meses.Jun||''}</td>
+        <td>${dados.meses.Jul||''}</td>
+        <td>${dados.meses.Ago||''}</td>
+        <td>${dados.meses.Set||''}</td>
+        <td>${dados.meses.Out||''}</td>
+        <td>${dados.meses.Nov||''}</td>
+        <td>${dados.meses.Dez||''}</td>
+        <td class="media">${media.toFixed(1)}</td>
+        <td>${status}</td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+carregarDados();
+
+</script>
 
 </body>
 
 <!-- ===================================== -->
-<!--          FIM DA PARTE 02             -->
+<!--          FIM DA PARTE 02 V2          -->
 <!-- ===================================== -->
 
 </html>
