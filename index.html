@@ -247,29 +247,27 @@ body{
 /* =========================
    TABELA
 ========================= */
-    .filtros-container{
-    background:white;
-    padding:15px 20px;
-    border-radius:15px;
-    margin-bottom:20px;
+   
+.filtro-cidade{
+    margin-left:6px;
 
-    display:flex;
-    align-items:center;
-    gap:10px;
+    background:transparent;
+    border:none;
 
-    box-shadow:0 3px 10px rgba(0,0,0,.08);
-}
+    color:white;
+    font-weight:700;
 
-.filtros-container label{
-    font-weight:600;
-}
-
-.filtros-container select{
-    padding:8px 12px;
-    border:1px solid #d1d5db;
-    border-radius:8px;
     cursor:pointer;
+
+    outline:none;
 }
+
+.filtro-cidade option{
+    color:black;
+}
+
+
+
 
 .table-card{
     background:white;
@@ -540,16 +538,6 @@ thead th:first-child{
 <!-- TABELA -->
     <!-- FILTROS -->
 
-<div class="filtros-container">
-
-    <label>Cidade:</label>
-
-    <select id="filtroCidade" onchange="aplicarFiltroCidade()">
-        <option value="Todas">Todas</option>
-    </select>
-
-</div>
-
 <div class="table-card">
 
     <div class="table-header">
@@ -796,11 +784,17 @@ for(let i = 2; i >= 0; i--){
 
 }
 
-document.getElementById("cabecalho-meses").innerHTML = `
+ddocument.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
 
-    <th onclick="ordenarTabela('cidade')" class="coluna-ordenavel">
-        Cidade ⇅
+    <th>
+        Cidade
+        <select
+            id="filtroCidade"
+            onchange="aplicarFiltroCidade()"
+            class="filtro-cidade">
+            <option value="Todas">Todas</option>
+        </select>
     </th>
 
     <th onclick="ordenarTabela('m1')" class="coluna-ordenavel">
