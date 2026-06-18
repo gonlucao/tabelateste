@@ -318,7 +318,20 @@ tbody tr:hover{
 .coluna-ordenavel:hover{
     background:#b00020;
 }
+.filtro-cidade{
+    margin-left:8px;
+    background:transparent;
+    border:none;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    outline:none;
+}
 
+.filtro-cidade option{
+    color:black;
+    background:white;
+}
     thead th{
     text-align:center;
 }
@@ -533,8 +546,11 @@ thead th:first-child{
         <thead>
     <tr id="cabecalho-meses">
         <th>Técnico</th>
-        <th onclick="ordenarTabela('cidade')" class="coluna-ordenavel">
-    Cidade ⇅
+<th>
+    Cidade
+    <select id="filtroCidade" onchange="filtrarCidade()" class="filtro-cidade">
+        <option value="Todas">Todas</option>
+    </select>
 </th>
         <th>Mês 1</th>
         <th>Mês 2</th>
@@ -708,6 +724,8 @@ function montarDashboard(tecnicos){
     const ranking =
     Object.entries(tecnicos)
     .sort((a,b)=>b[1].total-a[1].total);
+    
+    const cidades = new Set();
 
     document.getElementById("total-tecnicos")
     .textContent = ranking.length;
@@ -763,7 +781,12 @@ for(let i = 2; i >= 0; i--){
 
 document.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
-    <th>Cidade</th>
+    <th>
+    Cidade
+    <select id="filtroCidade" onchange="filtrarCidade()" class="filtro-cidade">
+        <option value="Todas">Todas</option>
+    </select>
+</th>
     <th onclick="ordenarTabela('m1')" class="coluna-ordenavel">
     ${mesesExibidos[0]} ⇅
 </th>
@@ -778,7 +801,26 @@ document.getElementById("cabecalho-meses").innerHTML = `
 </th>
     <th>Status</th>
 `;
-    
+    const selectCidade =
+document.getElementById("filtroCidade");
+
+if(selectCidade && selectCidade.options.length === 1){
+
+    [...cidades]
+    .sort()
+    .forEach(cidade=>{
+
+        const option =
+        document.createElement("option");
+
+        option.value = cidade;
+        option.textContent = cidade;
+
+        selectCidade.appendChild(option);
+
+    });
+
+}
     const tbody =
     document.getElementById("tabela-tecnicos");
 
@@ -789,6 +831,7 @@ document.getElementById("cabecalho-meses").innerHTML = `
         const nome = item[0];
         const dados = item[1];
         const cidade = dados.cidade || "-";
+        cidades.add(cidade);
 
         let somaMeses = 0;
         let qtdMeses = 0;
@@ -942,7 +985,31 @@ function ordenarTabela(coluna){
     });
 
 }
-    
+function filtrarCidade(){
+
+    const cidadeSelecionada =
+    document.getElementById("filtroCidade").value;
+
+    const linhas =
+    document.querySelectorAll("#tabela-tecnicos tr");
+
+    linhas.forEach(linha=>{
+
+        const cidade =
+        linha.cells[1].innerText.trim();
+
+        if(
+            cidadeSelecionada === "Todas" ||
+            cidade === cidadeSelecionada
+        ){
+            linha.style.display = "";
+        }else{
+            linha.style.display = "none";
+        }
+
+    });
+
+}    
 carregarDados();
 
 </script>
