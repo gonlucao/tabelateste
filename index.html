@@ -247,6 +247,44 @@ body{
 /* =========================
    TABELA
 ========================= */
+    .filtro-cidades-card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:25px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.filtro-cidades-titulo{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.botoes-cidades{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.btn-cidade{
+    border:none;
+    background:#edf2f7;
+    padding:10px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.2s;
+}
+
+.btn-cidade:hover{
+    transform:translateY(-2px);
+}
+
+.btn-cidade.ativo{
+    background:#d90429;
+    color:white;
+}
 
 .table-card{
     background:white;
@@ -440,7 +478,18 @@ thead th:first-child{
 </div>
 
 <!-- TOP 3 -->
+    
+<div class="filtro-cidades-card">
 
+    <div class="filtro-cidades-titulo">
+        📍 Filtrar Cidades
+    </div>
+
+    <div id="botoes-cidades" class="botoes-cidades">
+    </div>
+
+</div>
+    
 <div class="ranking-card">
 
     <div class="ranking-header">
@@ -556,6 +605,8 @@ thead th:first-child{
 
 const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
 const GID_TECNICOS = "818346424";
+    let cidadesSelecionadas = [];
+let dadosGlobais = {};
 
 const meses = [
     {nome:"Jan", gid:"1828169539"},
@@ -699,11 +750,33 @@ Number(colunas[19]) || 0;
 
     }
 
-    montarDashboard(tecnicos);
+    dadosGlobais = tecnicos;
+
+montarDashboard(tecnicos);
+
+criarBotoesCidade(tecnicos);
 
 }
 
 function montarDashboard(tecnicos){
+    
+    if(cidadesSelecionadas.length){
+
+    tecnicos =
+    Object.fromEntries(
+
+        Object.entries(tecnicos)
+        .filter(([nome,dados])=>
+
+            cidadesSelecionadas.includes(
+                dados.cidade
+            )
+
+        )
+
+    );
+
+}
 
     const ranking =
     Object.entries(tecnicos)
@@ -870,6 +943,88 @@ tr.innerHTML = `
 `;
 
         tbody.appendChild(tr);
+
+    });
+
+}
+    function criarBotoesCidade(tecnicos){
+
+    const cidades = [
+        ...new Set(
+            Object.values(tecnicos)
+            .map(t=>t.cidade)
+        )
+    ].sort();
+
+    const container =
+    document.getElementById("botoes-cidades");
+
+    container.innerHTML = "";
+
+    const btnTodas =
+    document.createElement("button");
+
+    btnTodas.className =
+    "btn-cidade ativo";
+
+    btnTodas.textContent =
+    "Todas";
+
+    btnTodas.onclick = ()=>{
+
+        cidadesSelecionadas = [];
+
+        document
+        .querySelectorAll(".btn-cidade")
+        .forEach(btn=>
+            btn.classList.remove("ativo")
+        );
+
+        btnTodas.classList.add("ativo");
+
+        montarDashboard(dadosGlobais);
+
+    };
+
+    container.appendChild(btnTodas);
+
+    cidades.forEach(cidade=>{
+
+        const btn =
+        document.createElement("button");
+
+        btn.className =
+        "btn-cidade";
+
+        btn.textContent =
+        cidade;
+
+        btn.onclick = ()=>{
+
+            btnTodas.classList.remove("ativo");
+
+            btn.classList.toggle("ativo");
+
+            if(
+                cidadesSelecionadas.includes(cidade)
+            ){
+
+                cidadesSelecionadas =
+                cidadesSelecionadas.filter(
+                    c=>c!==cidade
+                );
+
+            }else{
+
+                cidadesSelecionadas.push(cidade);
+
+            }
+
+            montarDashboard(dadosGlobais);
+
+        };
+
+        container.appendChild(btn);
 
     });
 
