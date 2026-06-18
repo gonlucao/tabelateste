@@ -205,7 +205,37 @@ body{
     font-size:54px;
     font-weight:700;
 }
+.meta-card-container{
+    display:flex;
+    gap:12px;
+    margin-top:10px;
+}
 
+.meta-mes-card{
+    flex:1;
+    background:#f8fafc;
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+}
+
+.meta-mes-titulo{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.meta-mes-percentual{
+    font-size:28px;
+    font-weight:700;
+    color:#d90429;
+}
+
+.meta-mes-info{
+    font-size:12px;
+    color:#64748b;
+    margin-top:5px;
+}
 /* =========================
    CONSISTÊNCIA
 ========================= */
@@ -525,10 +555,49 @@ thead th:first-child{
         <div class="card-value" id="media-geral">0</div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Meta Atingida</div>
-        <div class="card-value" id="meta-geral">0%</div>
+   <div class="card">
+
+    <div class="card-title">
+        Meta Atingida
     </div>
+
+    <div class="meta-card-container">
+
+        <div class="meta-mes-card">
+
+            <div class="meta-mes-titulo" id="titulo-meta-atual">
+                Atual
+            </div>
+
+            <div class="meta-mes-percentual" id="meta-atual">
+                0%
+            </div>
+
+            <div class="meta-mes-info" id="meta-atual-info">
+                0/0 Tec.
+            </div>
+
+        </div>
+
+        <div class="meta-mes-card">
+
+            <div class="meta-mes-titulo" id="titulo-meta-passado">
+                Passado
+            </div>
+
+            <div class="meta-mes-percentual" id="meta-passado">
+                0%
+            </div>
+
+            <div class="meta-mes-info" id="meta-passado-info">
+                0/0 Tec.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
     <div class="card">
 
@@ -829,6 +898,84 @@ for(let i = 2; i >= 0; i--){
     );
 
 }
+    const mesPassado =
+mesesExibidos[1];
+
+const mesAtualNome =
+mesesExibidos[2];
+
+let validosAtual = 0;
+let metaAtual = 0;
+
+let validosPassado = 0;
+let metaPassado = 0;
+
+ranking.forEach(item=>{
+
+    const dados = item[1];
+
+    const atual =
+    dados.meses[mesAtualNome] || 0;
+
+    const passado =
+    dados.meses[mesPassado] || 0;
+
+    if(atual >= 60){
+
+        validosAtual++;
+
+        if(atual >= 170){
+            metaAtual++;
+        }
+
+    }
+
+    if(passado >= 60){
+
+        validosPassado++;
+
+        if(passado >= 170){
+            metaPassado++;
+        }
+
+    }
+
+});
+
+const percentualAtual =
+validosAtual
+? (metaAtual / validosAtual) * 100
+: 0;
+
+const percentualPassado =
+validosPassado
+? (metaPassado / validosPassado) * 100
+: 0;
+
+document.getElementById("titulo-meta-atual")
+.textContent =
+mesAtualNome;
+
+document.getElementById("titulo-meta-passado")
+.textContent =
+mesPassado;
+
+document.getElementById("meta-atual")
+.textContent =
+percentualAtual.toFixed(0) + "%";
+
+document.getElementById("meta-passado")
+.textContent =
+percentualPassado.toFixed(0) + "%";
+
+document.getElementById("meta-atual-info")
+.textContent =
+`${metaAtual}/${validosAtual} Tec.`;
+
+document.getElementById("meta-passado-info")
+.textContent =
+`${metaPassado}/${validosPassado} Tec.`;
+    
     let somaMedias = 0;
 let tecnicosValidos = 0;
 
