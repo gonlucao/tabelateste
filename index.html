@@ -801,29 +801,7 @@ document.getElementById("cabecalho-meses").innerHTML = `
 </th>
     <th>Status</th>
 `;
- const selectCidade =
-document.getElementById("filtroCidade");
 
-if(selectCidade){
-
-    selectCidade.innerHTML =
-    '<option value="Todas">Todas</option>';
-
-    [...cidades]
-    .sort()
-    .forEach(cidade=>{
-
-        const option =
-        document.createElement("option");
-
-        option.value = cidade;
-        option.textContent = cidade;
-
-        selectCidade.appendChild(option);
-
-    });
-
-}
     console.log("CIDADES ENCONTRADAS:");
 console.log([...cidades]);
     
@@ -922,6 +900,45 @@ tr.innerHTML = `
         tbody.appendChild(tr);
 
     });
+ranking.forEach(item=>{
+
+    const nome = item[0];
+    const dados = item[1];
+    const cidade = dados.cidade || "-";
+
+    cidades.add(cidade);
+
+    ...
+
+    tbody.appendChild(tr);
+
+});
+
+/* COLE AQUI */
+
+const selectCidade =
+document.getElementById("filtroCidade");
+
+if(selectCidade){
+
+    selectCidade.innerHTML =
+    '<option value="Todas">Todas</option>';
+
+    [...cidades]
+    .sort()
+    .forEach(cidade=>{
+
+        const option =
+        document.createElement("option");
+
+        option.value = cidade;
+        option.textContent = cidade;
+
+        selectCidade.appendChild(option);
+
+    });
+
+}
 
 }
 let direcaoOrdenacao = {};
