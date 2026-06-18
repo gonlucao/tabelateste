@@ -505,6 +505,7 @@ tbody tr:hover{
 <script>
 
 const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
+const GID_TECNICOS = "818346424";
 
 const meses = [
     {nome:"Jan", gid:"1828169539"},
@@ -525,7 +526,50 @@ function limparNome(nome){
     return nome.replace(/\(.*?\)/g,'').trim();
 }
 
+async function carregarTecnicosPermitidos(){
+
+    const permitidos = new Set();
+
+    try{
+
+        const url =
+        `https://docs.google.com/spreadsheets/d/${PLANILHA_ID}/export?format=csv&gid=${GID_TECNICOS}`;
+
+        const resposta = await fetch(url);
+
+        const csv = await resposta.text();
+
+        const linhas = csv.split("\n");
+
+        for(let i=1;i<linhas.length;i++){
+
+            const nome =
+            limparNome(
+                (linhas[i] || "")
+                .replace(/"/g,"")
+                .trim()
+            );
+
+            if(nome){
+                permitidos.add(nome);
+            }
+
+        }
+
+    }catch(e){
+
+        console.log("Erro ao carregar técnicos:",e);
+
+    }
+
+    return permitidos;
+
+}
+
 async function carregarDados(){
+
+    const permitidos =
+    await carregarTecnicosPermitidos();
 
     const tecnicos = {};
 
@@ -549,10 +593,13 @@ async function carregarDados(){
                 if(!colunas[0]) continue;
 
                 const tecnico =
-                limparNome(colunas[0]);
+limparNome(colunas[0]);
 
-                const pontuacao =
-                Number(colunas[19]) || 0;
+if(!permitidos.has(tecnico))
+    continue;
+
+const pontuacao =
+Number(colunas[19]) || 0;
 
                 if(!tecnicos[tecnico]){
 
