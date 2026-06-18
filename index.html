@@ -247,24 +247,29 @@ body{
 /* =========================
    TABELA
 ========================= */
-    .filtro-cidades-card{
+   .filtro-cidades-card{
     background:white;
     border-radius:20px;
-    padding:20px;
+    padding:15px 20px;
     margin-bottom:25px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
     box-shadow:0 3px 10px rgba(0,0,0,.08);
 }
 
-.filtro-cidades-titulo{
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:15px;
-}
 
 .botoes-cidades{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
+
+    justify-content:center;
+    align-items:center;
+
+    width:100%;
 }
 
 .btn-cidade{
@@ -479,18 +484,7 @@ thead th:first-child{
 
 <!-- TOP 3 -->
     
-<div class="filtro-cidades-card">
 
-    <div class="filtro-cidades-titulo">
-        📍 Filtrar Cidades
-    </div>
-
-    <div id="botoes-cidades" class="botoes-cidades">
-    </div>
-
-</div>
-    
-<div class="ranking-card">
 
     <div class="ranking-header">
         🏆 Ranking Geral - Top 3
@@ -519,6 +513,14 @@ thead th:first-child{
     </div>
 
 </div>
+    <div class="filtro-cidades-card">
+
+    <div id="botoes-cidades" class="botoes-cidades">
+    </div>
+
+</div>
+    
+<div class="ranking-card">
 
 <!-- INDICADORES -->
 
