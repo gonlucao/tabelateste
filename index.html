@@ -801,10 +801,13 @@ document.getElementById("cabecalho-meses").innerHTML = `
 </th>
     <th>Status</th>
 `;
-    const selectCidade =
+ const selectCidade =
 document.getElementById("filtroCidade");
 
-if(selectCidade && selectCidade.options.length === 1){
+if(selectCidade){
+
+    selectCidade.innerHTML =
+    '<option value="Todas">Todas</option>';
 
     [...cidades]
     .sort()
