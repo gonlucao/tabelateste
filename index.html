@@ -809,19 +809,6 @@ function montarDashboard(tecnicos){
         document.getElementById("top3-pontos").textContent = Math.round(ranking[2][1].total);
     }
 
-    let soma = 0;
-
-    ranking.forEach(r=>{
-        soma += r[1].total;
-    });
-
-    const media =
-    ranking.length
-    ? soma / ranking.length
-    : 0;
-
-    document.getElementById("media-geral")
-    .textContent = media.toFixed(1);
 
 const hoje = new Date();
 
@@ -842,6 +829,47 @@ for(let i = 2; i >= 0; i--){
     );
 
 }
+    let somaMedias = 0;
+let tecnicosValidos = 0;
+
+ranking.forEach(item=>{
+
+    const dados = item[1];
+
+    const m1 =
+    dados.meses[mesesExibidos[0]] || 0;
+
+    const m2 =
+    dados.meses[mesesExibidos[1]] || 0;
+
+    const m3 =
+    dados.meses[mesesExibidos[2]] || 0;
+
+    const mesesValidos =
+    [m1,m2,m3]
+    .filter(v => v >= 60);
+
+    if(mesesValidos.length === 0){
+        return;
+    }
+
+    const mediaTecnico =
+    mesesValidos.reduce((a,b)=>a+b,0)
+    / mesesValidos.length;
+
+    somaMedias += mediaTecnico;
+    tecnicosValidos++;
+
+});
+
+const mediaGeral =
+tecnicosValidos > 0
+? somaMedias / tecnicosValidos
+: 0;
+
+document.getElementById("media-geral")
+.textContent =
+mediaGeral.toFixed(1);
 
 document.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
