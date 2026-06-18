@@ -247,6 +247,29 @@ body{
 /* =========================
    TABELA
 ========================= */
+    .filtros-container{
+    background:white;
+    padding:15px 20px;
+    border-radius:15px;
+    margin-bottom:20px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.filtros-container label{
+    font-weight:600;
+}
+
+.filtros-container select{
+    padding:8px 12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    cursor:pointer;
+}
 
 .table-card{
     background:white;
@@ -515,6 +538,17 @@ thead th:first-child{
 </div>
 
 <!-- TABELA -->
+    <!-- FILTROS -->
+
+<div class="filtros-container">
+
+    <label>Cidade:</label>
+
+    <select id="filtroCidade" onchange="aplicarFiltroCidade()">
+        <option value="Todas">Todas</option>
+    </select>
+
+</div>
 
 <div class="table-card">
 
@@ -704,6 +738,7 @@ Number(colunas[19]) || 0;
 }
 
 function montarDashboard(tecnicos){
+    const cidades = new Set();
 
     const ranking =
     Object.entries(tecnicos)
@@ -791,12 +826,32 @@ document.getElementById("cabecalho-meses").innerHTML = `
     document.getElementById("tabela-tecnicos");
 
     tbody.innerHTML = "";
+const selectCidade =
+document.getElementById("filtroCidade");
 
+if(selectCidade.options.length === 1){
+
+    [...cidades]
+    .sort()
+    .forEach(cidade=>{
+
+        const option =
+        document.createElement("option");
+
+        option.value = cidade;
+        option.textContent = cidade;
+
+        selectCidade.appendChild(option);
+
+    });
+
+}
     ranking.forEach(item=>{
 
         const nome = item[0];
         const dados = item[1];
         const cidade = dados.cidade || "-";
+        cidades.add(cidade);
 
         let somaMeses = 0;
         let qtdMeses = 0;
@@ -950,7 +1005,31 @@ function ordenarTabela(coluna){
     });
 
 }
-    
+    function aplicarFiltroCidade(){
+
+    const cidadeSelecionada =
+    document.getElementById("filtroCidade").value;
+
+    const linhas =
+    document.querySelectorAll("#tabela-tecnicos tr");
+
+    linhas.forEach(linha=>{
+
+        const cidade =
+        linha.cells[1].innerText.trim();
+
+        if(
+            cidadeSelecionada === "Todas" ||
+            cidade === cidadeSelecionada
+        ){
+            linha.style.display = "";
+        }else{
+            linha.style.display = "none";
+        }
+
+    });
+
+}
 carregarDados();
 
 </script>
