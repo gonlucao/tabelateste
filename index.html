@@ -309,6 +309,52 @@ tbody tr:hover{
     font-weight:700;
 }
 
+    thead th{
+    text-align:center;
+}
+
+thead th:first-child{
+    text-align:left;
+    padding-left:20px;
+}
+
+.coluna-mes1{
+    background:#f8fafc;
+    text-align:center;
+}
+
+.coluna-mes2{
+    background:#ffffff;
+    text-align:center;
+}
+
+.coluna-mes3{
+    background:#f8fafc;
+    text-align:center;
+}
+
+.coluna-media{
+    background:#edf2f7;
+    font-weight:700;
+    text-align:center;
+}
+
+.coluna-status{
+    background:#f8fafc;
+    text-align:center;
+}
+
+#cabecalho-meses th:nth-child(2){
+    background:#c70024;
+}
+
+#cabecalho-meses th:nth-child(3){
+    background:#d90429;
+}
+
+#cabecalho-meses th:nth-child(4){
+    background:#b00020;
+}
 /* =========================
    MOBILE
 ========================= */
@@ -760,12 +806,27 @@ const status3 = valores
 .join("");
 
 tr.innerHTML = `
-<td>${nome}</td>
-<td>${m1}</td>
-<td>${m2}</td>
-<td>${m3}</td>
-<td class="media">${media3.toFixed(1)}</td>
-<td>${status3}</td>
+<td style="padding-left:20px;">${nome}</td>
+
+<td class="coluna-mes1">
+    ${m1}
+</td>
+
+<td class="coluna-mes2">
+    ${m2}
+</td>
+
+<td class="coluna-mes3">
+    ${m3}
+</td>
+
+<td class="media coluna-media">
+    ${media3.toFixed(1)}
+</td>
+
+<td class="coluna-status">
+    ${status3}
+</td>
 `;
 
         tbody.appendChild(tr);
