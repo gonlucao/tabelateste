@@ -474,25 +474,16 @@ tbody tr:hover{
 
         <table>
 
-            <thead>
-                <tr>
-                    <th>Técnico</th>
-                    <th>Jan</th>
-                    <th>Fev</th>
-                    <th>Mar</th>
-                    <th>Abr</th>
-                    <th>Mai</th>
-                    <th>Jun</th>
-                    <th>Jul</th>
-                    <th>Ago</th>
-                    <th>Set</th>
-                    <th>Out</th>
-                    <th>Nov</th>
-                    <th>Dez</th>
-                    <th>Média</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+        <thead>
+    <tr id="cabecalho-meses">
+        <th>Técnico</th>
+        <th>Mês 1</th>
+        <th>Mês 2</th>
+        <th>Mês 3</th>
+        <th>Média</th>
+        <th>Status</th>
+    </tr>
+</thead>
 
             <tbody id="tabela-tecnicos">
             </tbody>
@@ -520,6 +511,20 @@ const meses = [
     {nome:"Out", gid:"966835053"},
     {nome:"Nov", gid:"719858964"},
     {nome:"Dez", gid:"889205160"}
+];
+    const nomesMeses = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez"
 ];
 
 function limparNome(nome){
@@ -666,6 +671,35 @@ function montarDashboard(tecnicos){
     document.getElementById("media-geral")
     .textContent = media.toFixed(1);
 
+const hoje = new Date();
+
+let mesAtual = hoje.getMonth();
+
+const mesesExibidos = [];
+
+for(let i = 2; i >= 0; i--){
+
+    let indice = mesAtual - i;
+
+    if(indice < 0){
+        indice += 12;
+    }
+
+    mesesExibidos.push(
+        nomesMeses[indice]
+    );
+
+}
+
+document.getElementById("cabecalho-meses").innerHTML = `
+    <th>Técnico</th>
+    <th>${mesesExibidos[0]}</th>
+    <th>${mesesExibidos[1]}</th>
+    <th>${mesesExibidos[2]}</th>
+    <th>Média</th>
+    <th>Status</th>
+`;
+    
     const tbody =
     document.getElementById("tabela-tecnicos");
 
@@ -704,23 +738,35 @@ function montarDashboard(tecnicos){
         const tr =
         document.createElement("tr");
 
-        tr.innerHTML = `
-        <td>${nome}</td>
-        <td>${dados.meses.Jan||''}</td>
-        <td>${dados.meses.Fev||''}</td>
-        <td>${dados.meses.Mar||''}</td>
-        <td>${dados.meses.Abr||''}</td>
-        <td>${dados.meses.Mai||''}</td>
-        <td>${dados.meses.Jun||''}</td>
-        <td>${dados.meses.Jul||''}</td>
-        <td>${dados.meses.Ago||''}</td>
-        <td>${dados.meses.Set||''}</td>
-        <td>${dados.meses.Out||''}</td>
-        <td>${dados.meses.Nov||''}</td>
-        <td>${dados.meses.Dez||''}</td>
-        <td class="media">${media.toFixed(1)}</td>
-        <td>${status}</td>
-        `;
+       const m1 =
+dados.meses[mesesExibidos[0]] || "";
+
+const m2 =
+dados.meses[mesesExibidos[1]] || "";
+
+const m3 =
+dados.meses[mesesExibidos[2]] || "";
+
+const valores = [m1,m2,m3]
+.filter(v=>v!=="" && v>0);
+
+const media3 =
+valores.length
+? valores.reduce((a,b)=>a+b,0)/valores.length
+: 0;
+
+const status3 = valores
+.map(v=>v >= 170 ? "🟢" : "🔴")
+.join("");
+
+tr.innerHTML = `
+<td>${nome}</td>
+<td>${m1}</td>
+<td>${m2}</td>
+<td>${m3}</td>
+<td class="media">${media3.toFixed(1)}</td>
+<td>${status3}</td>
+`;
 
         tbody.appendChild(tr);
 
