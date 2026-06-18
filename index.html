@@ -763,19 +763,27 @@ for(let i = 2; i >= 0; i--){
 
 document.getElementById("cabecalho-meses").innerHTML = `
     <th>Técnico</th>
-    <th>Cidade</th>
+
+    <th onclick="ordenarTabela('cidade')" class="coluna-ordenavel">
+        Cidade ⇅
+    </th>
+
     <th onclick="ordenarTabela('m1')" class="coluna-ordenavel">
-    ${mesesExibidos[0]} ⇅
-</th>
+        ${mesesExibidos[0]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('m2')" class="coluna-ordenavel">
-    ${mesesExibidos[1]} ⇅
-</th>
+        ${mesesExibidos[1]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('m3')" class="coluna-ordenavel">
-    ${mesesExibidos[2]} ⇅
-</th>
+        ${mesesExibidos[2]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('media')" class="coluna-ordenavel">
-    Média ⇅
-</th>
+        Média ⇅
+    </th>
+
     <th>Status</th>
 `;
     
