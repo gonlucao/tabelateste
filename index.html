@@ -369,11 +369,11 @@ td:first-child{
     font-weight:600;
 }
 
-tbody tr:nth-child(even){
+t tr:nth-child(even){
     background:#f8fafc;
 }
 
-tbody tr:hover{
+t tr:hover{
     background:#edf2f7;
 }
 
@@ -442,9 +442,82 @@ thead th:first-child{
    MOBILE
 ========================= */
 
+/* LOGIN */
+
+#login-page{
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-container{
+
+    width:100%;
+    max-width:400px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    box-shadow:0 3px 15px rgba(0,0,0,.12);
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+    text-align:center;
+}
+
+.login-logo{
+    width:100px;
+    margin:auto;
+}
+
+.login-container input{
+
+    padding:14px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:16px;
+}
+
+.login-container button{
+
+    background:#d90429;
+    color:white;
+
+    border:none;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:700;
+}
+
+.login-container button:hover{
+    opacity:.9;
+}
+
+#erro-login{
+
+    color:red;
+    font-size:14px;
+}
+
+    
 @media(max-width:768px){
 
-    body{
+    {
         padding:15px;
     }
 
@@ -485,6 +558,41 @@ thead th:first-child{
 <!-- ===================================== -->
 
 <body>
+<!-- ===================================== -->
+<!--        pagina de login         -->
+<!-- ===================================== -->
+    
+    <div id="login-page">
+
+    <div class="login-container">
+
+        <img
+        src="https://i.ibb.co/dwpdCjFz/Logo-RBT-Perfil.jpg"
+        class="login-logo">
+
+        <h2>Indicadores Equipes Externas</h2>
+
+        <input
+        type="text"
+        id="usuario"
+        placeholder="Usuário">
+
+        <input
+        type="password"
+        id="senha"
+        placeholder="Senha">
+
+        <button onclick="fazerLogin()">
+            Entrar
+        </button>
+
+        <div id="erro-login"></div>
+
+    </div>
+
+</div>
+
+<div id="dashboard-page" style="display:none;">
 
 <!-- CABEÇALHO -->
 
@@ -684,6 +792,34 @@ thead th:first-child{
 
 </div>
 <script>
+
+    const WEBAPP =
+"https://script.google.com/macros/s/AKfycbydC82xbEs7KD4MZcwxyxXX6ahBJKWN9QYKqZ_DV_OZH96EsG1JyyomJNjd3GpwWe2N/exec";
+
+const usuarioLogado =
+JSON.parse(
+    localStorage.getItem(
+        "usuarioLogado"
+    )
+);
+
+window.onload = ()=>{
+
+    if(usuarioLogado){
+
+        document.getElementById(
+            "login-page"
+        ).style.display = "none";
+
+        document.getElementById(
+            "dashboard-page"
+        ).style.display = "block";
+
+        carregarDados();
+
+    }
+
+};
 
 const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
 const GID_TECNICOS = "818346424";
@@ -1374,10 +1510,72 @@ function ordenarTabela(coluna){
     });
 
 }
-    
-carregarDados();
+   async function fazerLogin(){
+
+    const usuario =
+    document.getElementById("usuario").value;
+
+    const senha =
+    document.getElementById("senha").value;
+
+    const url =
+    WEBAPP
+    + "?user=" + encodeURIComponent(usuario)
+    + "&pass=" + encodeURIComponent(senha);
+
+    try{
+
+        const resposta =
+        await fetch(url);
+
+        const dados =
+        await resposta.json();
+
+        if(dados.status){
+
+            localStorage.setItem(
+                "usuarioLogado",
+                JSON.stringify(dados)
+            );
+
+            location.reload();
+
+        }else{
+
+            document.getElementById(
+                "erro-login"
+            ).textContent =
+            "Usuário ou senha inválidos";
+
+        }
+
+    }catch(e){
+
+        document.getElementById(
+            "erro-login"
+        ).textContent =
+        "Erro ao conectar";
+
+    }
+
+}
+
+function logout(){
+
+    localStorage.removeItem(
+        "usuarioLogado"
+    );
+
+    location.reload();
+
+} 
+if(usuarioLogado){
+    carregarDados();
+}
 
 </script>
+
+</div>
 
 </body>
 
