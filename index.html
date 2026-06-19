@@ -866,11 +866,6 @@ JSON.parse(
 
 window.onload = ()=>{
 
-
-    }
-
-};
-
     if(usuarioLogado){
 
         document.getElementById(
@@ -880,6 +875,15 @@ window.onload = ()=>{
         document.getElementById(
             "dashboard-page"
         ).style.display = "block";
+
+        document.getElementById(
+            "usuario-logado"
+        ).innerHTML =
+        `
+        👤 ${usuarioLogado.nome}
+        <br>
+        <small>${usuarioLogado.perfil}</small>
+        `;
 
         carregarDados();
 
