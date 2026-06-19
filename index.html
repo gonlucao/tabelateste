@@ -157,21 +157,38 @@ body{
 }
 
 .top3-container{
-    display:flex;
-    width:100%;
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1.2fr 1fr;
+
     gap:20px;
-    justify-content:space-between;
-    align-items:flex-end;
+
+    width:100%;
+
+    margin-top:20px;
+
+    align-items:stretch;
+
 }
 
 .top3-item{
-    flex:1;
-    min-width:220px;
-    max-width:320px;
+
+    width:100%;
+
+    background:#f8fafc;
+
+    border-radius:18px;
+
+    padding:30px 20px;
+
+    text-align:center;
+
 }
 
 .ouro{
-    flex:1.2;
+    transform:translateY(-15px);
 }
 
 .prata,
@@ -572,9 +589,9 @@ thead th:first-child{
         width:100%;
     }
 
-    .top3-container{
-        flex-direction:column;
-    }
+.top3-container{
+    grid-template-columns:1fr;
+}
 
     .top3-item{
         width:100%;
@@ -582,28 +599,7 @@ thead th:first-child{
 
 }
 
-    body{
-        padding:15px;
-    }
 
-    .hero{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .hero-info{
-        width:100%;
-    }
-
-    .top3-container{
-        flex-direction:column;
-    }
-
-    .top3-item{
-        width:100%;
-    }
-
-}
 
 </style>
 
