@@ -94,6 +94,47 @@ body{
     display:block;
     font-size:42px;
 }
+    #usuario-logado{
+
+    font-weight:700;
+    margin-bottom:10px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid
+    rgba(255,255,255,.25);
+
+}
+
+.btn-sair{
+
+    margin-top:10px;
+
+    border:none;
+
+    background:white;
+
+    color:#d90429;
+
+    padding:8px 16px;
+
+    border-radius:10px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btn-sair:hover{
+
+    transform:translateY(-2px);
+
+    background:#f8fafc;
+
+}
 
 /* =========================
    TOP 3
@@ -614,9 +655,26 @@ thead th:first-child{
     </div>
 
     <div class="hero-info">
-        <div>Total de Técnicos</div>
-        <strong id="total-tecnicos">0</strong>
+
+    <div id="usuario-logado">
+        Usuário
     </div>
+
+    <button
+        class="btn-sair"
+        onclick="logout()">
+        Sair
+    </button>
+
+    <div style="margin-top:12px;">
+        Total de Técnicos
+    </div>
+
+    <strong id="total-tecnicos">
+        0
+    </strong>
+
+</div>
 
 </div>
 
@@ -804,6 +862,33 @@ JSON.parse(
 );
 
 window.onload = ()=>{
+
+    if(usuarioLogado){
+
+        document.getElementById(
+            "login-page"
+        ).style.display = "none";
+
+        document.getElementById(
+            "dashboard-page"
+        ).style.display = "block";
+
+        document.getElementById(
+            "usuario-logado"
+        ).innerHTML =
+        `
+        👤 ${usuarioLogado.nome}
+        <br>
+        <small>
+            ${usuarioLogado.perfil}
+        </small>
+        `;
+
+        carregarDados();
+
+    }
+
+};
 
     if(usuarioLogado){
 
