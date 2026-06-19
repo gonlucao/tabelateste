@@ -158,10 +158,17 @@ body{
 
 .top3-container{
     display:flex;
+    flex-direction:row;
     justify-content:center;
     align-items:flex-end;
     gap:20px;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+}
+
+.top3-item{
+    flex:1;
+    max-width:320px;
+    min-width:220px;
 }
 
 .top3-item{
