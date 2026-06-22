@@ -235,20 +235,15 @@ body{
 
     display:grid;
 
-    grid-template-columns:
-        1fr 1.2fr 1fr;
+    grid-template-columns:1fr 1.2fr 1fr;
 
     gap:20px;
 
-    width:100%;
-
-    align-items:stretch;
+    align-items:end;
 
 }
 
 .top3-item{
-
-    width:100%;
 
     background:#f8fafc;
 
@@ -258,8 +253,9 @@ body{
 
     text-align:center;
 
-}
+    transition:.3s;
 
+}
 .top3-item:hover{
     transform:translateY(-5px);
 }
@@ -366,9 +362,15 @@ tbody tr:hover{
         width:100%;
     }
 
+    .menu-dashboard{
+        flex-direction:column;
+    }
+
     .top3-container{
         grid-template-columns:1fr;
     }
+
+}
 
     .top3-item{
         width:100%;
@@ -452,7 +454,6 @@ tbody tr:hover{
 </div>
 
 <!-- TOP 3 -->
-
 <div class="ranking-card">
 
     <div class="ranking-header">
@@ -461,49 +462,47 @@ tbody tr:hover{
 
     <div class="top3-container">
 
-      <div class="top3-item prata">
+        <div class="top3-item prata">
 
-    <div class="medal">🥈</div>
+            <div class="medal">🥈</div>
 
-    <div class="nome" id="top2-nome">
-        Carregando...
-    </div>
+            <div class="nome" id="top2-nome">
+                Carregando...
+            </div>
 
-    <div class="pontos" id="top2-pontos">
-        0
-    </div>
-
-</div>
+            <div class="pontos" id="top2-pontos">
+                0
+            </div>
 
         </div>
 
         <div class="top3-item ouro">
 
-    <div class="medal">🥇</div>
+            <div class="medal">🥇</div>
 
-    <div class="nome" id="top1-nome">
-        Carregando...
-    </div>
+            <div class="nome" id="top1-nome">
+                Carregando...
+            </div>
 
-    <div class="pontos" id="top1-pontos">
-        0
-    </div>
+            <div class="pontos" id="top1-pontos">
+                0
+            </div>
 
-</div>
+        </div>
 
         <div class="top3-item bronze">
 
-    <div class="medal">🥉</div>
+            <div class="medal">🥉</div>
 
-    <div class="nome" id="top3-nome">
-        Carregando...
-    </div>
+            <div class="nome" id="top3-nome">
+                Carregando...
+            </div>
 
-    <div class="pontos" id="top3-pontos">
-        0
-    </div>
+            <div class="pontos" id="top3-pontos">
+                0
+            </div>
 
-</div>
+        </div>
 
     </div>
 
