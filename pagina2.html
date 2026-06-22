@@ -1,48 +1,122 @@
-<div class="logo">
-    Campeonato de Instalações
-</div>
+<!-- CABEÇALHO -->
 
-<nav class="menu">
-    <a href="index.html">Dashboard</a>
-    <a href="pagina2.html" class="active">Campeonato</a>
-</nav>
-<div class="page-title">
-    <h1>Ranking Geral</h1>
-    <p>Acompanhe sua posição no campeonato.</p>
-</div>
+<div class="hero">
 
-<div class="cards">
+```
+<div class="hero-left">
 
-    <div class="card">
-        <h3>Participantes</h3>
-        <div class="value" id="participantes">0</div>
+    <div class="logo">
+        <img src="https://i.ibb.co/dwpdCjFz/Logo-RBT-Perfil.jpg" alt="RBT Internet">
     </div>
 
-    <div class="card">
-        <h3>Média Geral</h3>
-        <div class="value" id="media">0</div>
-    </div>
-
-    <div class="card">
-        <h3>Maior Pontuação</h3>
-        <div class="value" id="maiorPontuacao">0</div>
-    </div>
-
-    <div class="card">
-        <h3>Meta Atual</h3>
-        <div class="value">170</div>
+    <div>
+        <h1>Ranking Equipes</h1>
+        <p>
+            Acompanhe a classificação geral das equipes de instalação.
+        </p>
     </div>
 
 </div>
 
-<div class="table-container">
+<div class="hero-info">
 
-    <input
-        type="text"
-        id="pesquisa"
-        class="search"
-        placeholder="Pesquisar técnico..."
-    >
+    <div id="usuario-logado">
+        👤 Usuário
+        <br>
+        <small>Instalador</small>
+    </div>
+
+    <button class="btn-sair">
+        Sair
+    </button>
+
+    <div style="margin-top:12px;">
+        Participantes
+    </div>
+
+    <strong>
+        41
+    </strong>
+
+</div>
+```
+
+</div>
+
+<!-- MENU -->
+
+<div class="menu-dashboard">
+
+```
+<a href="index.html" class="menu-btn">
+    📊 Dashboard
+</a>
+
+<a href="pagina2.html" class="menu-btn ativo">
+    🏆 Ranking Equipes
+</a>
+```
+
+</div>
+
+<!-- CARD INFORMATIVO -->
+
+<div class="info-card">
+
+```
+🏆 Campeonato de Instalações • Atualização Mensal • Meta 170 Pontos
+```
+
+</div>
+
+<!-- TOP 3 -->
+
+<div class="ranking-card">
+
+```
+<div class="ranking-header">
+    🏆 Top 3 do Campeonato
+</div>
+
+<div class="top3-container">
+
+    <div class="top3-item prata">
+        <div class="medal">🥈</div>
+        <div class="nome">Técnico 02</div>
+        <div class="pontos">1420</div>
+    </div>
+
+    <div class="top3-item ouro">
+        <div class="medal">🥇</div>
+        <div class="nome">Técnico 01</div>
+        <div class="pontos">1532</div>
+    </div>
+
+    <div class="top3-item bronze">
+        <div class="medal">🥉</div>
+        <div class="nome">Técnico 03</div>
+        <div class="pontos">1398</div>
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- RANKING -->
+
+<div class="table-card">
+
+```
+<div class="table-header">
+    🏆 Ranking Geral
+</div>
+
+<div class="table-subtitle">
+    Classificação geral das equipes
+</div>
+
+<div class="table-responsive">
 
     <table>
 
@@ -55,16 +129,62 @@
             </tr>
         </thead>
 
-        <tbody id="rankingBody">
+        <tbody>
+
+            <tr>
+                <td>4º</td>
+                <td>Técnico 04</td>
+                <td>1350</td>
+                <td>🏆</td>
+            </tr>
+
+            <tr>
+                <td>5º</td>
+                <td>Técnico 05</td>
+                <td>1310</td>
+                <td>🏆</td>
+            </tr>
+
+            <tr>
+                <td>6º</td>
+                <td>Técnico 06</td>
+                <td>1285</td>
+                <td>🏆</td>
+            </tr>
+
+            <tr>
+                <td>7º</td>
+                <td>Técnico 07</td>
+                <td>1180</td>
+                <td>🟢</td>
+            </tr>
+
+            <tr>
+                <td>8º</td>
+                <td>Técnico 08</td>
+                <td>1020</td>
+                <td>🟢</td>
+            </tr>
+
+            <tr>
+                <td>9º</td>
+                <td>Técnico 09</td>
+                <td>860</td>
+                <td>🟢</td>
+            </tr>
+
+            <tr>
+                <td>10º</td>
+                <td>Técnico 10</td>
+                <td>640</td>
+                <td>🟡</td>
+            </tr>
+
         </tbody>
 
     </table>
 
-    <div class="legenda">
-        <span>🏆 Acima de 250</span>
-        <span>🟢 Meta Atingida</span>
-        <span>🟡 Próximo da Meta</span>
-        <span>🔴 Abaixo da Meta</span>
-    </div>
+</div>
+```
 
 </div>
