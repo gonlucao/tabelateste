@@ -420,17 +420,19 @@ tbody tr:hover{
 
     </div>
 
-    <div class="hero-info">
+<div class="hero-info">
 
     <div style="font-size:14px;">
-        Campeonato de Instalações
+        Participantes
     </div>
 
-    <strong>
-        2026
+    <strong id="total-tecnicos">
+        0
     </strong>
 
 </div>
+
+   
 
 </div>
 
@@ -556,16 +558,7 @@ tbody tr:hover{
 
 <script>
 
-function logout(){
 
-    localStorage.removeItem(
-        "usuarioLogado"
-    );
-
-    window.location.href =
-    "index.html";
-
-}
 const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
 
 const GID_TECNICOS = "818346424";
@@ -691,12 +684,14 @@ parseFloat(
 
 }
     function montarRanking(ranking){
+        const tbody =
+document.getElementById("rankingBody");
 
-    const tbody =
-    document.getElementById("rankingBody");
-     <strong id="total-tecnicos">
-    0
-</strong>
+document.getElementById(
+    "total-tecnicos"
+).textContent = ranking.length;
+
+    
         
         if(ranking.length >= 3){
 
