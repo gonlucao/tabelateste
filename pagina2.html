@@ -1,418 +1,70 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Ranking Mensal</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body { font-family:'Inter'; background:#f5f7fb; padding:20px; }
-.container { max-width:1200px; margin:auto; }
-
-.user-bar{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-bottom:10px;
-}
-.user-bar button{
-  background:#dc2626;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.menu { display:flex; gap:10px; margin-bottom:15px; }
-.menu button{
-  padding:10px 18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  background:#e5e7eb;
-  font-weight:600;
-}
-.menu button.ativo{ background:#dc2626; color:white; }
-
-.topbar {
-  background: linear-gradient(90deg,#b91c1c,#dc2626);
-  padding:15px;
-  border-radius:12px;
-  color:white;
-  margin-bottom:10px;
-}
-
-#contadorDias{
-  margin-bottom:15px;
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  display:inline-block;
-  font-weight:600;
-}
-
-.filtros { margin-bottom:15px; }
-.filtros input{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  width:100%;
-}
-
-.top3 { display:flex; gap:15px; margin-bottom:20px; }
-.top3-card {
-  flex:1;
-  background:white;
-  padding:20px;
-  border-radius:14px;
-  text-align:center;
-  box-shadow:0 4px 10px #0001;
-}
-
-.card { background:white; padding:20px; border-radius:16px; }
-
-/* 🔥 FILTRO CIDADES AJUSTADO */
-.filtro-cidades{
-  background:white;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:15px;
-
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:10px;
-
-  width:100%;
-}
-
-.filtro-cidades button{
-  flex:1 1 auto;
-  max-width:160px;
-
-  padding:8px 14px;
-  border:none;
-  border-radius:20px;
-  background:#e5e7eb;
-  cursor:pointer;
-  font-weight:600;
-  text-align:center;
-  transition:0.2s;
-}
-
-.filtro-cidades button:hover{
-  transform:scale(1.05);
-}
-
-.filtro-cidades button.ativo{
-  background:#dc2626;
-  color:white;
-}
-
-table { width:100%; border-collapse:collapse; }
-th,td { padding:12px; border-bottom:1px solid #eee; text-align:center; }
-th { cursor:pointer; }
-th:first-child, td:first-child { text-align:left; }
-
-tr:nth-child(even){ background:#fafafa; }
-
-.status {
-  display:inline-block;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  margin-right:8px;
-}
-.verde{background:#16a34a;}
-.amarelo{background:#f59e0b;}
-.vermelho{background:#dc2626;}
-
-.cidade-dot{
-  width:24px;
-  height:24px;
-  border-radius:50%;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:700;
-  color:white;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="user-bar">
-  <span id="usuarioLogado"></span>
-  <button onclick="logout()">Sair</button>
+<div class="logo">
+    Campeonato de Instalações
 </div>
 
-<div class="menu">
-  <button onclick="window.location.href='index.html'">📊 Dashboard</button>
-  <button class="ativo">🏆 Ranking</button>
+<nav class="menu">
+    <a href="index.html">Dashboard</a>
+    <a href="pagina2.html" class="active">Campeonato</a>
+</nav>
+<div class="page-title">
+    <h1>Ranking Geral</h1>
+    <p>Acompanhe sua posição no campeonato.</p>
 </div>
 
-<div class="topbar">
-  <h2 id="tituloMes"></h2>
-</div>
+<div class="cards">
 
-<div id="contadorDias"></div>
+    <div class="card">
+        <h3>Participantes</h3>
+        <div class="value" id="participantes">0</div>
+    </div>
 
-<div class="filtros">
-  <input type="text" id="busca" placeholder="Buscar técnico...">
-</div>
+    <div class="card">
+        <h3>Média Geral</h3>
+        <div class="value" id="media">0</div>
+    </div>
 
-<div class="top3" id="top3"></div>
+    <div class="card">
+        <h3>Maior Pontuação</h3>
+        <div class="value" id="maiorPontuacao">0</div>
+    </div>
 
-<div class="filtro-cidades" id="filtroCidades"></div>
-
-<div class="card">
-<table>
-<thead>
-<tr>
-<th onclick="ordenar()">#</th>
-<th>Técnico</th>
-<th onclick="ordenarCidade()">Cidade ⇅</th>
-<th onclick="ordenar()">Pontuação ⇅</th>
-<th>Evolução</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-</div>
+    <div class="card">
+        <h3>Meta Atual</h3>
+        <div class="value">170</div>
+    </div>
 
 </div>
 
-<script>
+<div class="table-container">
 
-/* LOGIN */
-window.addEventListener("load", () => {
-  let logado = JSON.parse(localStorage.getItem("logado"));
-  if(!logado){
-    window.location.href = "index.html";
-    return;
-  }
-  document.getElementById("usuarioLogado").innerText =
-    `👤 ${logado.nome} (${logado.perfil})`;
-});
+    <input
+        type="text"
+        id="pesquisa"
+        class="search"
+        placeholder="Pesquisar técnico..."
+    >
 
-function logout(){
-  localStorage.removeItem("logado");
-  window.location.href = "index.html";
-}
+    <table>
 
-/* CONFIG */
-const GID_FIXO = "1296901336";
+        <thead>
+            <tr>
+                <th>Posição</th>
+                <th>Técnico</th>
+                <th>Pontos</th>
+                <th>Status</th>
+            </tr>
+        </thead>
 
-let lista = [];
-let listaOriginal = [];
-let ordemDesc = true;
-let ordenarPorCidade = false;
-let cidadeSelecionada = "Todas";
+        <tbody id="rankingBody">
+        </tbody>
 
-/* UTIL */
-function getNomeMes(){
-  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  return meses[new Date().getMonth()];
-}
+    </table>
 
-function calcularDiasRestantes(){
-  const hoje = new Date();
-  const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0);
-  const diff = Math.ceil((ultimoDia - hoje)/(1000*60*60*24));
+    <div class="legenda">
+        <span>🏆 Acima de 250</span>
+        <span>🟢 Meta Atingida</span>
+        <span>🟡 Próximo da Meta</span>
+        <span>🔴 Abaixo da Meta</span>
+    </div>
 
-  const el = document.getElementById("contadorDias");
-
-  if(diff <= 3) el.style.color="#dc2626";
-  else if(diff <= 7) el.style.color="#f59e0b";
-  else el.style.color="#16a34a";
-
-  el.innerHTML = `⏳ Faltam <strong>${diff}</strong> dias`;
-}
-
-/* BUSCA */
-async function carregarMes(){
-  const url = `https://docs.google.com/spreadsheets/d/1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg/gviz/tq?tqx=out:json&gid=${GID_FIXO}`;
-  const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
-  return json.table.rows;
-}
-
-/* COR */
-function corCidade(cidade){
-  const cores = {
-    "Gramado": "#16a34a",
-    "Canela": "#2563eb",
-    "Nova Petrópolis": "#f59e0b",
-    "Dois Irmãos": "#dc2626",
-    "Herval": "#7c3aed",
-    "Feliz": "#0ea5e9",
-    "Esteio": "#9333ea"
-  };
-  return cores[cidade] || "#6b7280";
-}
-
-/* SIGLA */
-function siglaCidade(cidade){
-  const siglas = {
-    "Herval": "SMH",
-    "Gramado": "GRA",
-    "Dois Irmãos": "DIR",
-    "Nova Petrópolis": "NP",
-    "Feliz": "FLZ",
-    "Esteio": "EST"
-  };
-  return siglas[cidade] || "--";
-}
-
-/* BOTÕES */
-function criarBotoesCidades(){
-  let container = document.getElementById("filtroCidades");
-  container.innerHTML = "";
-
-  let cidades = [...new Set(listaOriginal.map(t => t.cidade))].sort();
-
-  container.innerHTML += `<button class="ativo" onclick="filtrarCidade('Todas', this)">Todas</button>`;
-
-  cidades.forEach(cidade=>{
-    container.innerHTML += `<button onclick="filtrarCidade('${cidade}', this)">${cidade}</button>`;
-  });
-}
-
-function filtrarCidade(cidade, el){
-  cidadeSelecionada = cidade;
-
-  document.querySelectorAll(".filtro-cidades button")
-    .forEach(btn => btn.classList.remove("ativo"));
-
-  el.classList.add("ativo");
-
-  aplicarFiltros();
-}
-
-/* CARREGAR */
-async function carregarRanking(){
-  document.getElementById("tituloMes").innerText =
-    "Ranking do mês de " + getNomeMes();
-
-  const dados = await carregarMes();
-  listaOriginal = [];
-
-  dados.forEach((r,i)=>{
-    if(i===0) return;
-
-    let nomeCompleto = r.c[0]?.v;
-    let total = Number(r.c[11]?.v) || 0;
-    if(!nomeCompleto) return;
-
-    let cidadeMatch = nomeCompleto.match(/\((.*?)\)/);
-    let cidade = cidadeMatch ? cidadeMatch[1] : "Sem cidade";
-    let nome = nomeCompleto.replace(/\(.*?\)/, "").trim();
-
-    listaOriginal.push({ nome, cidade, total, evolucao: 0 });
-  });
-
-  criarBotoesCidades();
-  aplicarFiltros();
-}
-
-/* FILTRO */
-function aplicarFiltros(){
-  const busca = document.getElementById("busca").value.toLowerCase();
-
-  lista = listaOriginal.filter(t=>{
-    let matchNome = t.nome.toLowerCase().includes(busca);
-    let matchCidade = cidadeSelecionada === "Todas" || t.cidade === cidadeSelecionada;
-    return matchNome && matchCidade;
-  });
-
-  ordenarRender();
-}
-
-document.getElementById("busca").addEventListener("input", aplicarFiltros);
-
-/* ORDENAÇÃO */
-function ordenar(){
-  ordenarPorCidade = false;
-  ordemDesc = !ordemDesc;
-  ordenarRender();
-}
-
-function ordenarCidade(){
-  ordenarPorCidade = !ordenarPorCidade;
-  ordenarRender();
-}
-
-function ordenarRender(){
-  lista.sort((a,b)=>{
-    if(ordenarPorCidade){
-      return a.cidade.localeCompare(b.cidade);
-    }
-    if(b.total !== a.total){
-      return ordemDesc ? b.total - a.total : a.total - b.total;
-    }
-    return a.cidade.localeCompare(b.cidade);
-  });
-
-  renderTop3();
-  renderTabela();
-}
-
-/* TOP 3 */
-function renderTop3(){
-  let top3=document.getElementById("top3");
-  top3.innerHTML="";
-
-  const medalhas=["🥇","🥈","🥉"];
-
-  lista.slice(0,3).forEach((t,i)=>{
-    top3.innerHTML+=`
-      <div class="top3-card">
-        <div>${medalhas[i]}</div>
-        <strong>${t.nome}</strong>
-        <div>${t.total}</div>
-      </div>
-    `;
-  });
-}
-
-/* TABELA */
-function renderTabela(){
-  let tbody=document.getElementById("tbody");
-  tbody.innerHTML="";
-
-  lista.forEach((t,i)=>{
-    let cor="vermelho";
-    if(i<3) cor="verde";
-    else if(t.total>=170) cor="amarelo";
-
-    tbody.innerHTML+=`
-      <tr>
-        <td>${i+1}</td>
-        <td><span class="status ${cor}"></span>${t.nome}</td>
-        <td title="${t.cidade}">
-          <span class="cidade-dot" style="background:${corCidade(t.cidade)}">
-            ${siglaCidade(t.cidade)}
-          </span>
-        </td>
-        <td>${t.total}</td>
-        <td>-</td>
-      </tr>
-    `;
-  });
-}
-
-/* INIT */
-carregarRanking();
-calcularDiasRestantes();
-
-</script>
-
-</body>
-</html>
+</div>
