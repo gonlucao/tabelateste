@@ -683,10 +683,32 @@ parseFloat(
         document.getElementById(
     "total-tecnicos"
 ).textContent = ranking.length;
+        
+        if(ranking.length >= 3){
+
+    document.getElementById("top1-nome").textContent =
+    ranking[0].nome;
+
+    document.getElementById("top1-pontos").textContent =
+    ranking[0].pontos;
+
+    document.getElementById("top2-nome").textContent =
+    ranking[1].nome;
+
+    document.getElementById("top2-pontos").textContent =
+    ranking[1].pontos;
+
+    document.getElementById("top3-nome").textContent =
+    ranking[2].nome;
+
+    document.getElementById("top3-pontos").textContent =
+    ranking[2].pontos;
+
+}
 
     tbody.innerHTML = "";
 
-    ranking.forEach((tec,index)=>{
+    ranking.slice(3).forEach((tec,index)=>{
 
         let status = "🔴";
 
@@ -707,7 +729,7 @@ parseFloat(
         tbody.innerHTML += `
         <tr>
 
-            <td>${index+1}º</td>
+            <td>${index+4}º</td>
 
             <td>${tec.nome}</td>
 
