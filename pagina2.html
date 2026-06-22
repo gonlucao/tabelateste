@@ -421,9 +421,9 @@ tbody tr:hover{
             Participantes
         </div>
 
-        <strong>
-            41
-        </strong>
+     <strong id="total-tecnicos">
+    0
+</strong>
 
     </div>
 
@@ -461,47 +461,49 @@ tbody tr:hover{
 
     <div class="top3-container">
 
-        <div class="top3-item prata">
+      <div class="top3-item prata">
 
-            <div class="medal">🥈</div>
+    <div class="medal">🥈</div>
 
-            <div class="nome">
-                Técnico 02
-            </div>
+    <div class="nome" id="top2-nome">
+        Carregando...
+    </div>
 
-            <div class="pontos">
-                1420
-            </div>
+    <div class="pontos" id="top2-pontos">
+        0
+    </div>
+
+</div>
 
         </div>
 
         <div class="top3-item ouro">
 
-            <div class="medal">🥇</div>
+    <div class="medal">🥇</div>
 
-            <div class="nome">
-                Técnico 01
-            </div>
+    <div class="nome" id="top1-nome">
+        Carregando...
+    </div>
 
-            <div class="pontos">
-                1532
-            </div>
+    <div class="pontos" id="top1-pontos">
+        0
+    </div>
 
-        </div>
+</div>
 
         <div class="top3-item bronze">
 
-            <div class="medal">🥉</div>
+    <div class="medal">🥉</div>
 
-            <div class="nome">
-                Técnico 03
-            </div>
+    <div class="nome" id="top3-nome">
+        Carregando...
+    </div>
 
-            <div class="pontos">
-                1398
-            </div>
+    <div class="pontos" id="top3-pontos">
+        0
+    </div>
 
-        </div>
+</div>
 
     </div>
 
@@ -539,72 +541,9 @@ tbody tr:hover{
 
             </thead>
 
-            <tbody>
+       <tbody id="rankingBody">
 
-                <tr>
-                    <td>4º</td>
-                    <td>Técnico 04</td>
-                    <td>1350</td>
-                    <td>🏆</td>
-                </tr>
-
-                <tr>
-                    <td>5º</td>
-                    <td>Técnico 05</td>
-                    <td>1310</td>
-                    <td>🏆</td>
-                </tr>
-
-                <tr>
-                    <td>6º</td>
-                    <td>Técnico 06</td>
-                    <td>1285</td>
-                    <td>🏆</td>
-                </tr>
-
-                <tr>
-                    <td>7º</td>
-                    <td>Técnico 07</td>
-                    <td>1180</td>
-                    <td>🟢</td>
-                </tr>
-
-                <tr>
-                    <td>8º</td>
-                    <td>Técnico 08</td>
-                    <td>1120</td>
-                    <td>🟢</td>
-                </tr>
-
-                <tr>
-                    <td>9º</td>
-                    <td>Técnico 09</td>
-                    <td>1050</td>
-                    <td>🟢</td>
-                </tr>
-
-                <tr>
-                    <td>10º</td>
-                    <td>Técnico 10</td>
-                    <td>940</td>
-                    <td>🟢</td>
-                </tr>
-
-                <tr>
-                    <td>11º</td>
-                    <td>Técnico 11</td>
-                    <td>810</td>
-                    <td>🟡</td>
-                </tr>
-
-                <tr>
-                    <td>12º</td>
-                    <td>Técnico 12</td>
-                    <td>690</td>
-                    <td>🟡</td>
-                </tr>
-
-            </tbody>
+</tbody>
 
         </table>
 
@@ -624,7 +563,176 @@ function logout(){
     "index.html";
 
 }
+const PLANILHA_ID = "1KAmeD9jbBX8JssWWeWG3kR03J4zVEjQDx--ojQIFSmg";
 
+const GID_TECNICOS = "818346424";
+
+const meses = [
+    {nome:"Jan", gid:"1828169539"},
+    {nome:"Fev", gid:"221336973"},
+    {nome:"Mar", gid:"899074991"},
+    {nome:"Abr", gid:"1915881981"},
+    {nome:"Mai", gid:"82997899"},
+    {nome:"Jun", gid:"171462989"},
+    {nome:"Jul", gid:"87076333"},
+    {nome:"Ago", gid:"529473088"},
+    {nome:"Set", gid:"136005325"},
+    {nome:"Out", gid:"966835053"},
+    {nome:"Nov", gid:"719858964"},
+    {nome:"Dez", gid:"889205160"}
+];
+
+function limparNome(nome){
+
+    return nome
+    .replace(/\(.*?\)/g,'')
+    .trim();
+
+}
+
+async function carregarTecnicosPermitidos(){
+
+    const permitidos = new Set();
+
+    const url =
+    `https://docs.google.com/spreadsheets/d/${PLANILHA_ID}/export?format=csv&gid=${GID_TECNICOS}`;
+
+    const resposta =
+    await fetch(url);
+
+    const csv =
+    await resposta.text();
+
+    const linhas =
+    csv.split("\n");
+
+    for(let i=1;i<linhas.length;i++){
+
+        const nome =
+        limparNome(
+            linhas[i]
+            .replace(/"/g,"")
+            .trim()
+        );
+
+        if(nome){
+
+            permitidos.add(nome);
+
+        }
+
+    }
+
+    return permitidos;
+
+}
+    async function carregarRanking(){
+
+    const permitidos =
+    await carregarTecnicosPermitidos();
+
+    const mesAtual =
+    new Date().getMonth();
+
+    const mes =
+    meses[mesAtual];
+
+    const url =
+    `https://docs.google.com/spreadsheets/d/${PLANILHA_ID}/export?format=csv&gid=${mes.gid}`;
+
+    const resposta =
+    await fetch(url);
+
+    const csv =
+    await resposta.text();
+
+    const linhas =
+    csv.split("\n");
+
+    const ranking = [];
+
+    for(let i=1;i<linhas.length;i++){
+
+        const colunas =
+        linhas[i].split(",");
+
+        if(!colunas[0]) continue;
+
+        const tecnico =
+        limparNome(colunas[0]);
+
+        if(!permitidos.has(tecnico))
+            continue;
+
+        const pontos =
+parseFloat(
+    (colunas[19] || "0")
+    .replace(",", ".")
+) || 0;
+
+        ranking.push({
+
+            nome:tecnico,
+            pontos:pontos
+
+        });
+
+    }
+
+    ranking.sort(
+        (a,b)=>
+        b.pontos-a.pontos
+    );
+
+    montarRanking(ranking);
+
+}
+    function montarRanking(ranking){
+
+    const tbody =
+    document.getElementById("rankingBody");
+        document.getElementById(
+    "total-tecnicos"
+).textContent = ranking.length;
+
+    tbody.innerHTML = "";
+
+    ranking.forEach((tec,index)=>{
+
+        let status = "🔴";
+
+        if(tec.pontos >= 250){
+
+            status = "🏆";
+
+        }else if(tec.pontos >= 170){
+
+            status = "🟢";
+
+        }else if(tec.pontos >= 150){
+
+            status = "🟡";
+
+        }
+
+        tbody.innerHTML += `
+        <tr>
+
+            <td>${index+1}º</td>
+
+            <td>${tec.nome}</td>
+
+            <td>${tec.pontos}</td>
+
+            <td>${status}</td>
+
+        </tr>
+        `;
+
+    });
+
+}
+    carregarRanking();
 </script>
 
 </body>
