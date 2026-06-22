@@ -95,7 +95,7 @@ body{
     font-size:42px;
 }
 
-#usuario-logado{
+
 
     width:100%;
 
@@ -105,7 +105,7 @@ body{
 
 }
 
-#nome-usuario{
+
 
     font-size:18px;
 
@@ -117,7 +117,7 @@ body{
 
 }
 
-#perfil-usuario{
+
 
     font-size:11px;
 
@@ -130,7 +130,7 @@ body{
     opacity:.85;
 
 }
-.btn-sair{
+
 
     margin-top:10px;
 
@@ -152,7 +152,7 @@ body{
 
 }
 
-.btn-sair:hover{
+
 
     transform:translateY(-2px);
 
@@ -425,33 +425,15 @@ tbody tr:hover{
 
     <div class="hero-info">
 
-   <div id="usuario-logado">
-
-    <div id="nome-usuario">
-        Carregando...
+    <div style="font-size:14px;">
+        Participantes
     </div>
 
-    <div id="perfil-usuario">
-        CARREGANDO...
-    </div>
+    <strong id="total-tecnicos">
+        0
+    </strong>
 
 </div>
-
-        <button
-            class="btn-sair"
-            onclick="logout()">
-            Sair
-        </button>
-
-        <div style="margin-top:12px;">
-            Participantes
-        </div>
-
-     <strong id="total-tecnicos">
-    0
-</strong>
-
-    </div>
 
 </div>
 
@@ -778,37 +760,8 @@ parseFloat(
     });
 
 }
-    function formatarNomeUsuario(nome){
-
-    return nome
-        .split(".")
-        .map(parte =>
-            parte.charAt(0).toUpperCase() +
-            parte.slice(1).toLowerCase()
-        )
-        .join(" ");
-
-}
-    const usuarioLogado =
-JSON.parse(
-    localStorage.getItem("usuarioLogado")
-);
-
-if(usuarioLogado){
-
-    document.getElementById(
-        "nome-usuario"
-    ).textContent =
-    formatarNomeUsuario(
-        usuarioLogado.usuario
-    );
-
-    document.getElementById(
-        "perfil-usuario"
-    ).textContent =
-    usuarioLogado.perfil.toUpperCase();
-
-}
+    
+    
     carregarRanking();
 </script>
 
