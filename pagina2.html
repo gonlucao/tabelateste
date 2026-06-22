@@ -96,12 +96,40 @@ body{
 }
 
 #usuario-logado{
-    font-weight:700;
-    margin-bottom:10px;
-    padding-bottom:10px;
+
+    width:100%;
+
+    padding-bottom:12px;
+
     border-bottom:1px solid rgba(255,255,255,.25);
+
 }
 
+#nome-usuario{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:white;
+
+    margin-bottom:4px;
+
+}
+
+#perfil-usuario{
+
+    font-size:11px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    opacity:.85;
+
+}
 .btn-sair{
 
     margin-top:10px;
@@ -397,11 +425,17 @@ tbody tr:hover{
 
     <div class="hero-info">
 
-        <div id="usuario-logado">
-            👤 Usuário
-            <br>
-            <small>Instalador</small>
-        </div>
+   <div id="usuario-logado">
+
+    <div id="nome-usuario">
+        Carregando...
+    </div>
+
+    <div id="perfil-usuario">
+        CARREGANDO...
+    </div>
+
+</div>
 
         <button
             class="btn-sair"
@@ -742,6 +776,37 @@ parseFloat(
         `;
 
     });
+
+}
+    function formatarNomeUsuario(nome){
+
+    return nome
+        .split(".")
+        .map(parte =>
+            parte.charAt(0).toUpperCase() +
+            parte.slice(1).toLowerCase()
+        )
+        .join(" ");
+
+}
+    const usuarioLogado =
+JSON.parse(
+    localStorage.getItem("usuarioLogado")
+);
+
+if(usuarioLogado){
+
+    document.getElementById(
+        "nome-usuario"
+    ).textContent =
+    formatarNomeUsuario(
+        usuarioLogado.usuario
+    );
+
+    document.getElementById(
+        "perfil-usuario"
+    ).textContent =
+    usuarioLogado.perfil.toUpperCase();
 
 }
     carregarRanking();
