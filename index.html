@@ -123,6 +123,32 @@ body{
     rgba(255,255,255,.25);
 
 }
+#nome-usuario{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:white;
+
+    margin-bottom:4px;
+
+}
+
+#perfil-usuario{
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    opacity:.85;
+
+}
+    
     /* =========================
 MENU
 ========================= */
@@ -719,9 +745,17 @@ thead th:first-child{
 
     <div class="hero-info">
 
-    <div id="usuario-logado">
+<div id="usuario-logado">
+
+    <div id="nome-usuario">
         Usuário
     </div>
+
+    <div id="perfil-usuario">
+        PERFIL
+    </div>
+
+</div>
 
     <button
         class="btn-sair"
@@ -935,7 +969,17 @@ JSON.parse(
         "usuarioLogado"
     )
 );
+function formatarNomeUsuario(nome){
 
+    return nome
+        .split(".")
+        .map(parte =>
+            parte.charAt(0).toUpperCase() +
+            parte.slice(1).toLowerCase()
+        )
+        .join(" ");
+
+}
 window.onload = ()=>{
 
     if(usuarioLogado){
@@ -948,14 +992,17 @@ window.onload = ()=>{
             "dashboard-page"
         ).style.display = "block";
 
-        document.getElementById(
-            "usuario-logado"
-        ).innerHTML =
-        `
-        👤 ${usuarioLogado.nome}
-        <br>
-        <small>${usuarioLogado.perfil}</small>
-        `;
+    document.getElementById(
+    "nome-usuario"
+).textContent =
+formatarNomeUsuario(
+    usuarioLogado.nome
+);
+
+document.getElementById(
+    "perfil-usuario"
+).textContent =
+usuarioLogado.perfil.toUpperCase();
 
         carregarDados();
 
