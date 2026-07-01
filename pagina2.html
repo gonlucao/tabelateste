@@ -486,13 +486,11 @@ tbody tr:hover{
 
                 <tr>
 
-                    <th>Posição</th>
-
-                    <th>Técnico</th>
-
-                    <th>Pontos</th>
-
-                    <th>Status</th>
+                <th>Posição</th>
+<th>Técnico</th>
+<th>Pontos</th>
+<th>Status</th>
+<th>🏅 Conquistas</th>
 
                 </tr>
 
@@ -529,12 +527,86 @@ const meses = [
     {nome:"Nov", gid:"719858964"},
     {nome:"Dez", gid:"889205160"}
 ];
-
+const conquistas = {};
 function limparNome(nome){
 
     return nome
     .replace(/\(.*?\)/g,'')
     .trim();
+
+}
+    async function calcularConquistas(permitidos){
+
+    // Inicializa todos os técnicos
+    permitidos.forEach(nome=>{
+
+        conquistas[nome]={
+            ouro:0,
+            prata:0,
+            bronze:0
+        };
+
+    });
+
+    // Percorre todos os meses
+    for(const mes of meses){
+
+        const url =
+        `https://docs.google.com/spreadsheets/d/${PLANILHA_ID}/export?format=csv&gid=${mes.gid}`;
+
+        const resposta =
+        await fetch(url);
+
+        const csv =
+        await resposta.text();
+
+        const linhas =
+        csv.split("\n");
+
+        const rankingMes=[];
+
+        for(let i=1;i<linhas.length;i++){
+
+            const colunas =
+            linhas[i].split(",");
+
+            if(!colunas[0]) continue;
+
+            const tecnico =
+            limparNome(colunas[0]);
+
+            if(!permitidos.has(tecnico))
+                continue;
+
+            const pontos =
+            parseFloat(
+                (colunas[19]||"0")
+                .replace(",",".")
+            ) || 0;
+
+            rankingMes.push({
+
+                nome:tecnico,
+                pontos:pontos
+
+            });
+
+        }
+
+        rankingMes.sort(
+            (a,b)=>b.pontos-a.pontos
+        );
+
+        if(rankingMes[0])
+            conquistas[rankingMes[0].nome].ouro++;
+
+        if(rankingMes[1])
+            conquistas[rankingMes[1].nome].prata++;
+
+        if(rankingMes[2])
+            conquistas[rankingMes[2].nome].bronze++;
+
+    }
 
 }
 
@@ -578,7 +650,9 @@ async function carregarTecnicosPermitidos(){
 
     const permitidos =
     await carregarTecnicosPermitidos();
-
+        
+await calcularConquistas(permitidos);
+        
     const mesAtual =
     new Date().getMonth();
 
@@ -692,11 +766,21 @@ document.getElementById(
 
             <td>${index+4}º</td>
 
-            <td>${tec.nome}</td>
+          <td>${tec.nome}</td>
 
-            <td>${tec.pontos}</td>
+<td>${tec.pontos}</td>
 
-            <td>${status}</td>
+<td>${status}</td>
+
+<td>
+
+${conquistas[tec.nome]?.ouro ? "🥇×"+conquistas[tec.nome].ouro : ""}
+
+${conquistas[tec.nome]?.prata ? " 🥈×"+conquistas[tec.nome].prata : ""}
+
+${conquistas[tec.nome]?.bronze ? " 🥉×"+conquistas[tec.nome].bronze : ""}
+
+</td>
 
         </tr>
         `;
