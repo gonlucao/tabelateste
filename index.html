@@ -528,8 +528,15 @@ td{
 
 th:first-child,
 td:first-child{
-    text-align:left;
     font-weight:600;
+}
+
+td:first-child{
+    text-align:center;
+}
+
+td:nth-child(2){
+    text-align:left;
 }
 
 tbody tr:nth-child(even){
@@ -560,8 +567,17 @@ tbody tr:hover{
 }
 
 thead th:first-child{
+
+    text-align:center;
+    padding-left:0;
+
+}
+
+thead th:nth-child(2){
+
     text-align:left;
     padding-left:20px;
+
 }
 
 .coluna-mes1{
@@ -703,10 +719,56 @@ thead th:first-child{
 
 }
 
+/* ==========================
+   EXPANSÃO DA LINHA
+========================== */
 
+.expand-btn{
+    width:30px;
+    height:30px;
+    border:none;
+    border-radius:8px;
+    background:#edf2f7;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.expand-btn:hover{
+    background:#d90429;
+    color:white;
+}
+
+.expand-row{
+    display:none;
+    background:#fafafa;
+}
+
+.expand-row td{
+    padding:0;
+}
+
+.expand-content{
+
+    padding:30px;
+
+    background:white;
+
+    border-left:5px solid #d90429;
+
+    border-radius:0 0 16px 16px;
+
+    box-shadow:inset 0 0 0 1px #edf2f7;
+
+}
 
 </style>
 
+
+
+
+    
 <!-- ===================================== -->
 <!--          FIM DA PARTE 01             -->
 <!-- ===================================== -->
@@ -1472,20 +1534,28 @@ document.getElementById("media-geral")
 mediaGeral.toFixed(1);
 
 document.getElementById("cabecalho-meses").innerHTML = `
+    <th style="width:45px;"></th>
+
     <th>Técnico</th>
+
     <th>Cidade</th>
+
     <th onclick="ordenarTabela('m1')" class="coluna-ordenavel">
-    ${mesesExibidos[0]} ⇅
-</th>
+        ${mesesExibidos[0]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('m2')" class="coluna-ordenavel">
-    ${mesesExibidos[1]} ⇅
-</th>
+        ${mesesExibidos[1]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('m3')" class="coluna-ordenavel">
-    ${mesesExibidos[2]} ⇅
-</th>
+        ${mesesExibidos[2]} ⇅
+    </th>
+
     <th onclick="ordenarTabela('media')" class="coluna-ordenavel">
-    Média ⇅
-</th>
+        Média ⇅
+    </th>
+
     <th>Status</th>
 `;
     
@@ -1527,6 +1597,10 @@ document.getElementById("cabecalho-meses").innerHTML = `
 
         const tr =
         document.createElement("tr");
+        
+        const expandId =
+"expand_" +
+nome.replace(/\s/g,"_");
 
        const m1 =
 dados.meses[mesesExibidos[0]] || "";
@@ -1550,10 +1624,20 @@ const status3 = valores
 .join("");
 
 tr.innerHTML = `
-<td style="padding-left:20px;">
-    ${nome}
+
+<td style="text-align:center;">
+
+<button
+class="expand-btn"
+onclick="toggleExpand('${expandId}',this)">
+▶
+</button>
+
 </td>
 
+<td style="padding-left:20px;">
+${nome}
+</td>
 <td>
     ${cidade}
 </td>
@@ -1580,6 +1664,34 @@ tr.innerHTML = `
 `;
 
         tbody.appendChild(tr);
+        const expandRow =
+document.createElement("tr");
+
+expandRow.className =
+"expand-row";
+
+expandRow.id =
+expandId;
+
+expandRow.innerHTML = `
+
+<td colspan="8">
+
+<div class="expand-content">
+
+<b>${nome}</b>
+
+<br><br>
+
+Espaço reservado para os indicadores.
+
+</div>
+
+</td>
+
+`;
+
+tbody.appendChild(expandRow);
 
     });
 
@@ -1673,60 +1785,103 @@ function ordenarTabela(coluna){
     const tabela =
     document.getElementById("tabela-tecnicos");
 
-    const linhas =
-    Array.from(tabela.querySelectorAll("tr"));
+   const linhas =
+[];
+
+const linhasTecnicos =
+Array.from(
+    tabela.querySelectorAll("tr:not(.expand-row)")
+);
+
+linhasTecnicos.forEach(linha=>{
+
+    linhas.push(linha);
+
+    const proxima =
+    linha.nextElementSibling;
+
+    if(
+        proxima &&
+        proxima.classList.contains("expand-row")
+    ){
+
+        linhas.push(proxima);
+
+    }
+
+});
 
     direcaoOrdenacao[coluna] =
     !direcaoOrdenacao[coluna];
+    
+    document
+    .querySelectorAll(".expand-row")
+    .forEach(l => l.style.display = "none");
 
-    linhas.sort((a,b)=>{
+document
+    .querySelectorAll(".expand-btn")
+    .forEach(b => b.innerHTML = "▶");
+
+    const grupos = [];
+
+for(let i=0;i<linhas.length;i+=2){
+
+    grupos.push({
+
+        tecnico:linhas[i],
+
+        expand:linhas[i+1]
+
+    });
+
+}
+
+grupos.sort((a,b)=>{
 
         let valorA;
         let valorB;
 
         switch(coluna){
 
-            case "cidade":
-                valorA = a.cells[1].innerText;
-                valorB = b.cells[1].innerText;
-                break;
+        case "cidade":
+    valorA = a.cells[2].innerText;
+    valorB = b.cells[2].innerText;
+    break;
 
-            case "m1":
-                valorA = Number(a.cells[2].innerText || 0);
-                valorB = Number(b.cells[2].innerText || 0);
-                break;
+case "m1":
+    valorA = Number(a.cells[3].innerText || 0);
+    valorB = Number(b.cells[3].innerText || 0);
+    break;
 
-            case "m2":
-                valorA = Number(a.cells[3].innerText || 0);
-                valorB = Number(b.cells[3].innerText || 0);
-                break;
+case "m2":
+    valorA = Number(a.cells[4].innerText || 0);
+    valorB = Number(b.cells[4].innerText || 0);
+    break;
 
-            case "m3":
-                valorA = Number(a.cells[4].innerText || 0);
-                valorB = Number(b.cells[4].innerText || 0);
-                break;
+case "m3":
+    valorA = Number(a.cells[5].innerText || 0);
+    valorB = Number(b.cells[5].innerText || 0);
+    break;
 
-            case "media":
-                valorA = Number(a.cells[5].innerText || 0);
-                valorB = Number(b.cells[5].innerText || 0);
-                break;
-
-        }
+case "media":
+    valorA = Number(a.cells[6].innerText || 0);
+    valorB = Number(b.cells[6].innerText || 0);
+    break;
+                  }     
 
         if(typeof valorA === "string"){
 
-            return direcaoOrdenacao[coluna]
-                ? valorA.localeCompare(valorB)
-                : valorB.localeCompare(valorA);
+    return direcaoOrdenacao[coluna]
+        ? valorA.localeCompare(valorB)
+        : valorB.localeCompare(valorA);
 
-        }
+}
 
-        return direcaoOrdenacao[coluna]
-            ? valorA - valorB
-            : valorB - valorA;
+return direcaoOrdenacao[coluna]
+    ? valorA - valorB
+    : valorB - valorA;
 
-    });
-
+});
     tabela.innerHTML = "";
 
     linhas.forEach(linha=>{
@@ -1734,6 +1889,32 @@ function ordenarTabela(coluna){
     });
 
 }
+    function toggleExpand(id,botao){
+
+    const linha =
+    document.getElementById(id);
+
+    const aberta =
+    linha.style.display === "table-row";
+
+    document
+        .querySelectorAll(".expand-row")
+        .forEach(l=>l.style.display="none");
+
+    document
+        .querySelectorAll(".expand-btn")
+        .forEach(b=>b.innerHTML="▶");
+
+    if(!aberta){
+
+        linha.style.display="table-row";
+
+        botao.innerHTML="▼";
+
+    }
+
+}
+    
    async function fazerLogin(){
 
     const usuario =
