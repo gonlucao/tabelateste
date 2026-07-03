@@ -762,6 +762,97 @@ thead th:nth-child(2){
     box-shadow:inset 0 0 0 1px #edf2f7;
 
 }
+    /* ===================================
+   CARDS DO PAINEL EXPANSÍVEL
+=================================== */
+
+.expand-header{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.expand-header h3{
+
+    font-size:20px;
+
+    color:#1f2937;
+
+}
+
+.expand-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,170px);
+
+    justify-content:center;
+
+    gap:18px;
+
+    width:100%;
+
+}
+
+.expand-card{
+
+    background:#f8fafc;
+
+    border-radius:14px;
+
+    padding:18px 12px;
+
+    min-height:95px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:1px solid #e5e7eb;
+
+    transition:.25s;
+
+}
+
+.expand-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.expand-card-title{
+
+    font-size:13px;
+
+    color:#64748b;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+}
+
+.expand-card-value{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#d90429;
+
+}
 
 </style>
 
@@ -1679,11 +1770,42 @@ expandRow.innerHTML = `
 
 <div class="expand-content">
 
-<b>${nome}</b>
+<div class="expand-header">
 
-<br><br>
+<h3>📊 Painel Expansível</h3>
 
-Espaço reservado para os indicadores.
+</div>
+
+<div class="expand-grid">
+
+${[
+"Produção",
+"Instalações",
+"Suportes",
+"Média",
+"Auditoria",
+"Atrasos",
+"Faltas",
+"Banco Horas",
+"NPS",
+"Retrabalho"
+].map(card=>`
+
+<div class="expand-card">
+
+<div class="expand-card-title">
+${card}
+</div>
+
+<div class="expand-card-value">
+--
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
 
 </div>
 
